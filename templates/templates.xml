@@ -7,9 +7,11 @@
       <div class="oe_structure">
         <div class="container">
         <h3>configurable products availiable</h3>
+        <select>
         <t t-foreach="conf_products" t-as="conf_product">
-            <p><div t-esc="conf_product.name"/></p>
+            <option value="conf_product.id"> <div t-esc="conf_product.name"/> </option>
         </t>
+        </select>
         </div>
       </div>
       <div class="oe_structure"/>
