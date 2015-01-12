@@ -1,15 +1,12 @@
 {
-'name': "website_therp",
+'name': "website_chd_product_configurator",
 'description': """
-Website module for educational purposes
+Web front for chindu product configurator
 """,
 'depends': ['base',
             'website',
            ],
 'data': [
         'templates/templates.xml',
-        'data/data.xml',
-        'security/ir.model.access.csv',
-        'views/views.xml',
         ],
 }

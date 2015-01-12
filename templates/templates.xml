@@ -1,0 +1,18 @@
+
+  <openerp><data>
+  <template id="conf_start">
+    <t t-call="website.layout">
+      <t t-set="title">Product Configurator</t>
+      <div class="oe_structure"/>
+      <div class="oe_structure">
+        <div class="container">
+        <h3>configurable products availiable</h3>
+        <t t-foreach="conf_products" t-as="conf_product">
+            <p><div t-esc="conf_product.name"/></p>
+        </t>
+        </div>
+      </div>
+      <div class="oe_structure"/>
+    </t>
+  </template>
+  </data></openerp>
