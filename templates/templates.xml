@@ -11,9 +11,6 @@
             <select t-attf-name="selected_id" class= "form-control">
                 <option></option>
                 <t t-foreach="conf_products" t-as="conf_product">
-                    <t t-set="curr_id" >
-                        <t t-raw="conf_product.id"/>
-                    </t>
                     <option t-att-value="conf_product.id">
                          <t t-esc="conf_product.name"/>
                     </option>
@@ -36,6 +33,38 @@
         <div class="container">
         <h3>Configuring product <t t-esc="curr_product_id.name" /></h3>
         <form t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post" >
+        <label for="quantity"> Quantity </label>
+        <input type="text" name="quantity" on_change="onchange_type()"/>
+        <label for="size"> Size </label>
+        <input type="text" name="size"/>
+        <div class="unselected-field" style="display: inline;">
+             <label>Type:<select t-attf-name="type" class= "form-control" on_change="onchange_type()">
+                    <option></option>
+                    <t t-foreach="curr_types" t-as="curr_type">
+                    <option t-att-value="curr_type.id">
+                         <t t-esc="curr_type.name"/>
+                    </option>
+                </t>
+              </select>
+            </label>
+        </div>
+        <field name="name"/>
+        <div class="unselected-field" style="display: inline-block;">
+             <label>Finishing:<select t-attf-name="finishing" class= "form-control" >
+                    <option></option>
+                    <t t-foreach="curr_finishings" t-as="curr_finishing">
+                    <option t-att-value="curr_finishing.id">
+                         <t t-esc="curr_finishing.name"/>
+                    </option>
+                    </t>
+              </select>
+            </label>
+        </div>
+
+        <h3> Attributes </h3>
+        <label for="Accessories"> Accessories </label>
+        <label for="flag_image"> image </label>
+        <input type="image" name="flag_image"/>
         <button type="submit" class="btn btn-primary btn-lg pull-center" >See Quotations</button>
         </form>
         </div>
@@ -53,23 +82,6 @@
         <div class="container">
         <h3>Sale options for <t t-esc="curr_product_id.name" /></h3>
         <form t-attf-action="/add_to_cart/#{ curr_product_id.id }/" method="post" >
-
-        <label for="quantity"> Quantity </label>
-        <input type="text" name="quantity"/>
-        <label for="size"> Size </label>
-        <input type="text" name="size"/>
-         <select t-attf-name="type" class= "form-control">
-                <option></option>
-           </select>
-        <select t-attf-name="finishing" class= "form-control">
-                <option></option>
-           </select>
-        <h3> Attributes </h3>
-        <label for="Accessories"> Accessories </label>
-
-        <label for="flag_image"> image </label>
-        <input type="image" name="flag_image"/>
-
         <button type="submit" class="btn btn-primary btn-lg pull-center" >Confirm Order</button>
         </form>
         </div>
