@@ -1,5 +1,12 @@
 
   <openerp><data>
+
+  <template id="assets_product_configurator" inherit_id="website.assets_frontend" name="chd_product_configurator">
+  <xpath expr="." position="inside">
+      <script type="text/javascript" src="/website_chd_product_configurator/static/src/js/website_chd_product_configurator.js"></script>
+  </xpath>
+  </template>
+
   <template id="conf_start">
     <t t-call="website.layout">
       <t t-set="title">Product Configurator</t>
@@ -8,10 +15,10 @@
         <div class="container">
         <h3>configurable products available</h3>
          <form t-attf-action="/chd_init/" method="post" >
-            <select t-attf-name="selected_id" class= "form-control">
+            <select t-attf-name="selected_id" class= "product_selection">
                 <option></option>
                 <t t-foreach="conf_products" t-as="conf_product">
-                    <option t-att-value="conf_product.id">
+                    <option t-att-value="conf_product.id" class= "product_selection">
                          <t t-esc="conf_product.name"/>
                     </option>
                 </t>
@@ -53,7 +60,7 @@
              <label>Finishing:<select t-attf-name="finishing" class= "form-control" >
                     <option></option>
                     <t t-foreach="curr_finishings" t-as="curr_finishing">
-                    <option t-att-value="curr_finishing.id">
+                    <option t-att-value="curr_finishing.id" class="dd_element">
                          <t t-esc="curr_finishing.name"/>
                     </option>
                     </t>
