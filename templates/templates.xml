@@ -15,7 +15,7 @@
         <div class="container">
         <h3>configurable products available</h3>
          <form t-attf-action="/chd_init/" method="post" >
-            <select t-attf-name="selected_id" class= "product_selection" id="prod_sel">
+            <select t-attf-name="selected_id" class= "product_selection" id="prod_select_id">
                 <option></option>
                 <t t-foreach="conf_products" t-as="conf_product">
                     <option t-att-value="conf_product.id" class= "product_selection">
@@ -23,7 +23,6 @@
                     </option>
                 </t>
            </select>
-        <h1 id="out_msg"></h1>
         <button type="submit" class="btn btn-primary btn-lg pull-center" >Select Configurable Product</button>
         </form>
         <div class="clearfix"/>
@@ -42,14 +41,15 @@
         <h3>Configuring product <t t-esc="curr_product_id.name" /></h3>
         <form t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post" >
         <label for="quantity"> Quantity </label>
-        <input type="text" name="quantity" on_change="onchange_type()"/>
+        <input type="text" name="quantity"/>
         <label for="size"> Size </label>
         <input type="text" name="size"/>
         <div class="unselected-field" style="display: inline;">
-             <label>Type:<select t-attf-name="type" class= "form-control" on_change="onchange_type()">
+             <label>Type:
+             <select t-attf-name="type" class="type_selection" id="type_select_id">
                     <option></option>
                     <t t-foreach="curr_types" t-as="curr_type">
-                    <option t-att-value="curr_type.id">
+                    <option t-att-value="curr_type.id" class="type_selection">
                          <t t-esc="curr_type.name"/>
                     </option>
                 </t>
@@ -73,6 +73,7 @@
         <label for="Accessories"> Accessories </label>
         <label for="flag_image"> image </label>
         <input type="image" name="flag_image"/>
+        <h1 id="out_msg"></h1>
         <button type="submit" class="btn btn-primary btn-lg pull-center" >See Quotations</button>
         </form>
         </div>

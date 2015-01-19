@@ -51,14 +51,14 @@ class Chd_init(http.Controller):
 
 
     @http.route('/chd_init/getch/',type='json',website=True)
-    def tr(self,id):
-        curr_types = http.request.env['product.type'].search([('product_option_ids','in',[id])])
-        data = json.dumps(http.request.registry['product.type'].search_read(
+    def tr(self,type_id):
+        curr_types = http.request.env['product.finishing'].search([('type_option_ids','in',[type_id])])
+        data = json.dumps(http.request.registry['product.finishing'].search_read(
             http.request.cr,
             http.request.uid,
             fields=['id','name'],
             limit=30,
-            domain=[('product_option_ids','in',[int(id)])],
+            domain=[('type_option_ids','in',[int(type_id)])],
             context=http.request.context
             ))
         return data
