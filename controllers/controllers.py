@@ -51,8 +51,10 @@ class Chd_init(http.Controller):
 
     def to_JSON(self):
         return json.dumps(self,default=lambda o: o.__dict__,sort_keys=True,indent=4)
+    @http.route('/auth_openid/login/status',type='json',auth='none')
 
-    @http.route('/chd_init/get_options',type='http',auth="public",methods=['GET'],website=True)
+
+    @http.route('/chd_init/get_options',type='json',auth='public',methods=['POST'],website=True)
     def tr(self,id):
         curr_types = http.request.env['product.type'].search([('product_option_ids','in',[id])])
         data = http.request.registry['product.type'].search_read(
@@ -64,6 +66,8 @@ class Chd_init(http.Controller):
             context=http.request.context
             )
         return json.dumps(data)
+
+
 
     """form = PostsNewForm(request.httprequest.form)
     if request.httprequest.method == 'POST' and form.validate():
