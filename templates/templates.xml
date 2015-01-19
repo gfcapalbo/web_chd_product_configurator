@@ -50,6 +50,7 @@
                     <t t-foreach="curr_types" t-as="curr_type">
                     <option t-att-value="curr_type.id">
                          <t t-esc="curr_type.name"/>
+
                     </option>
                 </t>
               </select>
