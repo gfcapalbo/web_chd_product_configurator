@@ -58,13 +58,9 @@
         </div>
         <field name="name"/>
         <div class="unselected-field" style="display: inline-block;">
-             <label>Finishing:<select t-attf-name="finishing" class= "form-control" >
-                    <option></option>
-                    <t t-foreach="curr_finishings" t-as="curr_finishing">
-                    <option t-att-value="curr_finishing.id" class="dd_element">
-                         <t t-esc="curr_finishing.name"/>
-                    </option>
-                    </t>
+             <label>Finishing:
+             <select t-attf-name="finishing" class= "fini_selection" id="fini_select_id">
+
               </select>
             </label>
         </div>

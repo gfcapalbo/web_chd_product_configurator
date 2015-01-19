@@ -10,13 +10,20 @@ $('.type_selection').each(function () {
     		 {
              'type_id': this.value,
     		  }).then(function (data) {
-    			  			console.log(data)
     			  			var  dd_list=document.getElementById("type_select_id");
-    			  			document.getElementById("out_msg").innerHTML=  dd_list.options[dd_list.selectedIndex].text+".";
+		  					document.getElementById("out_msg").innerHTML=  dd_list.options[dd_list.selectedIndex].text+".";
+    			  			console.log(data);
+    			  			var data_js = eval(data); // this will convert your json string to a javascript object
+    			  			$('#fini_select_id').empty();
+    			  			for (var key in data_js)
+    			  			{
+    			  			    if (data_js.hasOwnProperty(key))
+    			  			    {
+    			  			        $('#fini_select_id').append("<option value='" +data_js[key].id+ "'>"+ data_js[key].name+ "</option>");
+    			  			    }
+    			  			}
+
     		  })
-
-
-
     });
 });
 });
