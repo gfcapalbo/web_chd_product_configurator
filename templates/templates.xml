@@ -4,6 +4,7 @@
   <template id="assets_product_configurator" inherit_id="website.assets_frontend" name="chd_product_configurator">
   <xpath expr="." position="inside">
       <script type="text/javascript" src="/website_chd_product_configurator/static/src/js/website_chd_product_configurator.js"></script>
+      <link rel='stylesheet' href='/website_chd_product_configurator/static/src/css/website_chd_product_configurator.css'/>
   </xpath>
   </template>
 
@@ -15,10 +16,10 @@
         <div class="container">
         <h3>configurable products available</h3>
          <form t-attf-action="/chd_init/" method="post" >
-            <select t-attf-name="selected_id" class= "product_selection" id="prod_select_id">
+            <select t-attf-name="selected_id" class= "form-control product_selection" id="prod_select_id">
                 <option></option>
                 <t t-foreach="conf_products" t-as="conf_product">
-                    <option t-att-value="conf_product.id" class= "product_selection">
+                    <option t-att-value="conf_product.id" class= "form-control product_selection">
                          <t t-esc="conf_product.name"/>
                     </option>
                 </t>
@@ -34,48 +35,115 @@
 
  <template id="configurator">
     <t t-call="website.layout">
-      <t t-set="title">Product Configurator</t>
-      <div class="oe_structure"/>
-      <div class="oe_structure">
-        <div class="container">
-        <h3>Configuring product <t t-esc="curr_product_id.name" /></h3>
-        <form t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post" >
-        <label for="quantity"> Quantity </label>
-        <input type="text" name="quantity"/>
-        <label for="size"> Size </label>
-        <input type="text" name="size"/>
-        <div class="unselected-field" style="display: inline;">
-             <label>Type:
-             <select t-attf-name="type" class="type_selection" id="type_select_id">
-                    <option></option>
-                    <t t-foreach="curr_types" t-as="curr_type">
-                    <option t-att-value="curr_type.id" class="type_selection">
-                         <t t-esc="curr_type.name"/>
-                    </option>
-                </t>
-              </select>
-            </label>
-        </div>
-        <field name="name"/>
-        <div class="unselected-field" style="display: inline-block;">
-             <label>Finishing:
-             <select t-attf-name="finishing" class= "fini_selection" id="fini_select_id">
+       <t t-set="title">Product Configurator</t>
+          <div class="oe_structure"/>
+          <div class="oe_structure">
+            <div class="container">
+            <h3>Configuration options for <t t-esc="curr_product_id.name" /></h3>
+            <form t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post" >
+            <div class="form-control">
+                <label for="quantity"> Quantity </label>
+                <input type="text" name="quantity"/>
+            </div>
+            <div t-if="curr_product_id.chd_size_type in ('fixed')" >
+                <label>Size (fixed choices available):
+                <select t-attf-name="type" class="form-control size_selection" id="size_select_id">
+                        <option></option>
+                        <t t-foreach="curr_product_id.chd_size_ids" t-as="curr_size">
+                             <option t-att-value="curr_size.id" class="form-control">
+                                     <t t-esc="curr_size.name"/>
+                             </option>
+                        </t>
+                </select>
+                </label>
+            </div>
+                <div t-if="curr_product_id.chd_size_type in ('dynamic')" class="container">
+                     <table>
+                     <thead>
+                        <tr>
+                            <td>
+                            <strong> Available size range:</strong>
+                            </td>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                            <td>
+                             Minumum width:
+                            </td>
+                            <td>
+                            <t t-esc="curr_product_id.chd_min_width"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                              Maximum width:
+                            </td>
+                            <td>
+                            <t t-esc="curr_product_id.chd_max_width"/>
+                            </td>
+                        </tr>
+                          <tr>
+                            <td>
+                               Minimum height:
+                            </td>
+                            <td>
+                             <t t-esc="curr_product_id.chd_min_height"/>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td>
+                                Maximum height:
+                            </td>
+                            <td>
+                              <t t-esc="curr_product_id.chd_max_height"/>
+                            </td>
+                        </tr>
+                     </tbody>
+                     </table>
+            </div>
+            <div t-if="curr_product_id.chd_size_type in ('dynamic')" class="form-control">
+                        <label for="size">Width</label>
+                        <input type="text" name="width"/>
+                        <label for="size">height</label>
+                        <input type="text" name="height"/>
+            </div>
+            <div class="unselected-field" style="display: inline-block;">
+                 <label>Type:
+                 <select t-attf-name="type" class="form-control type_selection" id="type_select_id">
+                        <option></option>
+                        <t t-foreach="curr_types" t-as="curr_type">
+                        <option t-att-value="curr_type.id" class="form-control type_selection">
+                             <t t-esc="curr_type.name"/>
+                        </option>
+                    </t>
+                  </select>
+                </label>
+            </div>
+            <div class="unselected-field" style="display: inline-block;">
+                 <label>Finishing:
+                 <select t-attf-name="finishing" class= "form-control fini_selection" id="fini_select_id">
+                    <!-- filled by js -->
+                  </select>
+                </label>
+            </div>
 
-              </select>
-            </label>
-        </div>
+            <h3> Attributes </h3>
+            <div class="form-control">
+                <label for="Accessories"> Accessories </label>
+                <label for="flag_image"> image </label>
+                <input type="image" name="flag_image"/>
+            </div>
+            <h4 id="out_msg"></h4>
+            <button type="submit" class="btn btn-primary btn-lg pull-center" >See Quotations</button>
+            </form>
 
-        <h3> Attributes </h3>
-        <label for="Accessories"> Accessories </label>
-        <label for="flag_image"> image </label>
-        <input type="image" name="flag_image"/>
-        <h1 id="out_msg"></h1>
-        <button type="submit" class="btn btn-primary btn-lg pull-center" >See Quotations</button>
-        </form>
-        </div>
-      </div>
-      <div class="oe_structure"/>
-      </t>
+            </div>
+          </div>
+
+          <div class="oe_structure"/>
+
+          </t>
   </template>
 
 

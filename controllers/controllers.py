@@ -27,11 +27,10 @@ class Chd_init(http.Controller):
         chd_finishing = http.request.env['product.finishing']
         if http.request.httprequest.method == 'POST' and selected_id:
              curr_types = chd_types.search([('product_option_ids','in',[selected_id])])
-             curr_finishings = chd_finishing.search([('type_option_ids','in',curr_types.ids)])
+             curr_product = Conf_products.search([('id','=',selected_id)])
              return http.request.render('website_chd_product_configurator.configurator',{
-                 'curr_product_id': Conf_products.search([('id','=',selected_id)]),
+                 'curr_product_id': curr_product,
                  'curr_types' : curr_types,
-                 'curr_finishings': curr_finishings,
                  })
         return http.request.render('website_chd_product_configurator.conf_start',{
             'conf_products': Conf_products.search([('chd_origin_product','=',True)]),
