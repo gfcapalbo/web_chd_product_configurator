@@ -63,7 +63,7 @@ class Chd_init(http.Controller):
                   accessory_id = int(key.split('_')[1])
                   # get the associated value by choosing the field with the right name
                   # accessoryid_{id}=on/off   and the associate quantity would be qtyaccessoryid_{id}=9898
-                  accessory_qty = form_data['qtyaccessoryid_' + accessory_id]
+                  accessory_qty = form_data['qtyaccessoryid_' + str(accessory_id)]
                   new_accessory = http.request.env['chd.product_configurator'].create({
                      'product_id':accessory_id,
                      'configurator_id':new_chd.id,
