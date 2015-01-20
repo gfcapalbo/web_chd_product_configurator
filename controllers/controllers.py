@@ -50,6 +50,7 @@ class Chd_init(http.Controller):
          Conf_products = http.request.env['product.template']
          chd_results = http.request.env['chd.product_configurator.result']
          all_accessories = []
+         alert_msg = ""
          chd_dict = {
              'origin_product_id':form_data['product_id'],
              'partner_id':1,
@@ -76,6 +77,8 @@ class Chd_init(http.Controller):
                   # get the associated value by choosing the field with the right name
                   # accessoryid_{id}=on/off   and the associate quantity would be qtyaccessoryid_{id}=9898
                   accessory_qty = form_data['qtyaccessoryid_' + str(accessory_id)]
+                  if accessory_qty == 0:
+                    alert_msg += "An accessory has been selected with quantity 0, please specify quantity"
                   new_accessory = http.request.env['chd.accessoire_line'].create({
                      'product_id':accessory_id,
                      'configurator_id':new_chd.id,
@@ -86,7 +89,6 @@ class Chd_init(http.Controller):
          new_chd._model.calculate_price(http.request.cr,http.request.uid,[new_chd.id],context=http.request.context)
          a = chd_results.search([('configurator_id','=',new_chd.id)])
          return http.request.render('website_chd_product_configurator.configuration_options',{
-             'outputstuff': str(form_data),
              'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
              'curr_chd': new_chd,
              'all_accessories':all_accessories,

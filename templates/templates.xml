@@ -204,11 +204,11 @@
       <div class="oe_structure">
         <div class="container">
         <h3>Sale options for <t t-esc="curr_product_id.name" /></h3>
-
         <br/>
         <t t-foreach="results" t-as="result">
            <form t-attf-action="/chd_init/buy#{ curr_product_id.id }/" method="post" class="form-horizontal">
                <div  class="row" style="border-bottom: 0.5px solid;">
+               <br/>
                     <div class="col-xs-4">
                         <p>Cost price for supplier : <t t-esc="result.standard_price"/> </p>
                         <p>Customer price : <t t-esc="result.customer_price"/> </p>
