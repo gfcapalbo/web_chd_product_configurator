@@ -48,14 +48,26 @@ class Chd_init(http.Controller):
     @http.route('/chd_init/<id>/',website=True)
     def call_configurator(self,**form_data):
          Conf_products = http.request.env['product.template']
+         chd_results = http.request.env['chd.product_configurator.result']
          all_accessories = []
-         new_chd = http.request.env['chd.product_configurator'].create({
+         chd_dict = {
              'origin_product_id':form_data['product_id'],
              'partner_id':1,
-             'state':'init',
-             'width': form_data['width'],
+             'state':'config',
              'quantity': form_data['quantity']
-         })
+             }
+         # dynamic and fixed size types
+
+         if form_data['product_id_chd_size_type'] == "fixed":
+            chd_dict['size_id'] = form_data['size']
+            chd_size = http.request.env['chd.size'].search([('id','=',form_data['size'])])
+            chd_dict['width'] = chd_size.width
+            chd_dict['height'] = chd_size.height
+         else:
+            chd_dict['width'] = form_data['width']
+            chd_dict['height'] = form_data['height']
+
+         new_chd = http.request.env['chd.product_configurator'].create(chd_dict)
          for key in form_data:
              # get only accessories that have been checked, in future website validation will render this unnecessary.
              if  ('accessoryid_' in key) and form_data[key] == 'on':
@@ -71,7 +83,8 @@ class Chd_init(http.Controller):
                      })
                   all_accessories.append(new_accessory)
          # _model refers to old API model, self.pool is not available in controller context (praise the lord for Holger!)
-         a = new_chd._model.calculate_price(http.request.cr,http.request.uid,[new_chd.id],context=http.request.context)
+         new_chd._model.calculate_price(http.request.cr,http.request.uid,[new_chd.id],context=http.request.context)
+         a = chd_results.search([('configurator_id','=',new_chd.id)])
          return http.request.render('website_chd_product_configurator.configuration_options',{
              'outputstuff': str(form_data),
              'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
