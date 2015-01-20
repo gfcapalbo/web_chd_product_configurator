@@ -40,73 +40,101 @@
           <div class="container">
             <h3>Configuration options for <t t-esc="curr_product_id.name" /></h3>
             <form t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post" class="form-horizontal">
-            <div class="form-control">
-                <label for="quantity"> Quantity </label>
-                <input type="text" name="quantity"/>
+            <div class="row">
+                 <div class="col-sm-1" >
+                    <label for="quantity" >Quantity:</label>
+                 </div>
+                 <div class="col-sm-1" >
+                    <input type="text" name="quantity" class="form-control input-sm"/>
+                </div>
             </div>
-            <div t-if="curr_product_id.chd_size_type in ('fixed')" >
-                <label>Size (fixed choices available):
-                <select t-attf-name="type" class="form-control size_selection" id="size_select_id">
+
+            <div t-if="curr_product_id.chd_size_type in ('fixed')" class="row">
+                <div class="col-sm-1" >
+                    <label for="size" class="form-control input-sm" >Size (fixed choices available):
+                        <select t-attf-name="size" class="col-xs-6 size_selection" id="size_select_id">
                         <option></option>
                         <t t-foreach="curr_product_id.chd_size_ids" t-as="curr_size">
-                             <option t-att-value="curr_size.id" class="form-control">
+                             <option t-att-value="curr_size.id" >
                                      <t t-esc="curr_size.name"/>
                              </option>
                         </t>
-                </select>
-                </label>
+                        </select>
+                    </label>
+                </div>
             </div>
-                <div t-if="curr_product_id.chd_size_type in ('dynamic')" class="container">
-                     <table>
-                     <thead>
-                        <tr>
+            <div t-if="curr_product_id.chd_size_type in ('dynamic')" class="row">
+
+
+                    <div class="col-sm-6">
+                               <div class="row">
+                                    <div class="col-sm-2">
+                                        <label for="size">Width</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <input type="number" size="7" name="width" class="form-control input-sm"/>
+                                    </div>
+                               </div>
+                               <div class="row">
+                                  <div class="col-sm-2">
+                                    <label for="size">Height</label>
+                                  </div>
+                                  <div class="col-sm-4">
+                                    <input type="number" size="7" name="height" class="form-control input-sm" />
+                                  </div>
+                               </div>
+                    </div>
+
+                <div class="col-xs-4">
+                    <div >
+                         <table>
+                         <thead>
+                            <tr>
+                                <td>
+                                <strong> Available size range:</strong>
+                                </td>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            <tr>
+                                <td>
+                                 Minumum width:
+                                </td>
+                                <td>
+                                <t t-esc="curr_product_id.chd_min_width"/>
+                                </td>
                             <td>
-                            <strong> Available size range:</strong>
+                            ---
                             </td>
-                        </tr>
-                     </thead>
-                     <tbody>
-                        <tr>
+                                <td>
+                                  Maximum width:
+                                </td>
+                                <td>
+                                <t t-esc="curr_product_id.chd_max_width"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                   Minimum height:
+                                </td>
+                                <td>
+                                 <t t-esc="curr_product_id.chd_min_height"/>
+                                </td>
                             <td>
-                             Minumum width:
+                            ---
                             </td>
-                            <td>
-                            <t t-esc="curr_product_id.chd_min_width"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                              Maximum width:
-                            </td>
-                            <td>
-                            <t t-esc="curr_product_id.chd_max_width"/>
-                            </td>
-                        </tr>
-                          <tr>
-                            <td>
-                               Minimum height:
-                            </td>
-                            <td>
-                             <t t-esc="curr_product_id.chd_min_height"/>
-                            </td>
-                        </tr>
-                         <tr>
-                            <td>
-                                Maximum height:
-                            </td>
-                            <td>
-                              <t t-esc="curr_product_id.chd_max_height"/>
-                            </td>
-                        </tr>
-                     </tbody>
-                     </table>
-            </div>
-            <div t-if="curr_product_id.chd_size_type in ('dynamic')" class="form-control">
-                        <label for="size">Width</label>
-                        <input type="text" name="width"/>
-                        <label for="size">height</label>
-                        <input type="text" name="height"/>
-            </div>
+                                <td>
+                                    Maximum height:
+                                </td>
+                                <td>
+                                  <t t-esc="curr_product_id.chd_max_height"/>
+                                </td>
+                            </tr>
+                         </tbody>
+                         </table>
+                    </div>
+                </div>
+           </div>
             <div class="unselected-field" style="display: inline-block;">
                  <label>Type:
                  <select t-attf-name="type" class="form-control type_selection" id="type_select_id">
@@ -121,7 +149,7 @@
             </div>
             <div class="unselected-field" style="display: inline-block;">
                  <label>Finishing:
-                 <select t-attf-name="finishing" class= "form-group fini_selection" id="fini_select_id">
+                 <select t-attf-name="finishing" class= "form-control fini_selection" id="fini_select_id">
                     <!-- filled by js -->
                   </select>
                 </label>
@@ -141,9 +169,9 @@
                                                                 <input type="checkbox"><t t-esc="curr_accessory.name"/></input>
                                                             </label>
                                                         </div>
-                                                        <div class="col-xs-6" style="border-right: 0.5px solid;">
+                                                        <div class="col-xs-4" style="border-right: 0.5px solid;">
                                                             <label id="small_listquantity" for="quantity_acc">Quantity</label>
-                                                            <input type="number" t-att-maxlength="3" t-att-width="4" name="quantity_acc"/>
+                                                            <input type="number" t-att-maxlength="3" t-att-size="4" name="quantity_acc"/>
                                                         </div>
                                                     </div>
                                                     </li>
