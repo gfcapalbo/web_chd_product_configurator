@@ -90,7 +90,7 @@ class Chd_init(http.Controller):
              'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
              'curr_chd': new_chd,
              'all_accessories':all_accessories,
-             'abc':a,
+             'results':a,
              })
 
 
