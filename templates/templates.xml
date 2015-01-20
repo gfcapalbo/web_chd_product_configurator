@@ -45,14 +45,14 @@
                     <label for="quantity" >Quantity:</label>
                  </div>
                  <div class="col-sm-1" >
-                    <input type="text" name="quantity" class="form-control input-sm"/>
+                    <input type="number" name="quantity" class="form-control input-sm"/>
                 </div>
             </div>
 
             <div t-if="curr_product_id.chd_size_type in ('fixed')" class="row">
-                <div class="col-sm-1" >
-                    <label for="size" class="form-control input-sm" >Size (fixed choices available):
-                        <select t-attf-name="size" class="col-xs-6 size_selection" id="size_select_id">
+                <div class="col-sm-8" >
+                    <label for="size"  >Size (fixed choices available):
+                        <select t-attf-name="size" class="form-control input-sm size_selection" id="size_select_id">
                         <option></option>
                         <t t-foreach="curr_product_id.chd_size_ids" t-as="curr_size">
                              <option t-att-value="curr_size.id" >
@@ -166,12 +166,12 @@
                                                     <div class="row" style="border-bottom: 0.5px solid;padding-top: 2px;padding-bottom: 2px;">
                                                         <div class="col-xs-6" style="border-right: 0.5px solid;">
                                                             <label class="checkbox-inline">
-                                                                <input type="checkbox"><t t-esc="curr_accessory.name"/></input>
+                                                                <input type="checkbox" t-att-name="'accessory'+curr_accessory.id" > <t t-esc="curr_accessory.name"/></input>
                                                             </label>
                                                         </div>
-                                                        <div class="col-xs-4" style="border-right: 0.5px solid;">
+                                                        <div class="col-xs-4" style="border-right: 0.5px solid;" t-att-name="curr_accessory.id">
                                                             <label id="small_listquantity" for="quantity_acc">Quantity</label>
-                                                            <input type="number" t-att-maxlength="3" t-att-size="4" name="quantity_acc"/>
+                                                            <input t-att-name="'accessory_qty'+'str('+curr_accessory.id')'" type="number" t-att-maxlength="3" t-att-size="4" />
                                                         </div>
                                                     </div>
                                                     </li>
@@ -206,6 +206,8 @@
         <div class="container">
         <h3>Sale options for <t t-esc="curr_product_id.name" /></h3>
         <form t-attf-action="/add_to_cart/#{ curr_product_id.id }/" method="post" >
+
+
         <button type="submit" class="btn btn-primary btn-lg pull-center" >Confirm Order</button>
         </form>
         </div>

@@ -40,10 +40,6 @@ class Chd_init(http.Controller):
             'conf_products': Conf_products.search([('chd_origin_product','=',True)]),
         })
 
-    def onchange_type(self,cr,uid,ids,context=None):
-        curr_finishings = chd_finishing.search([('type_option_ids','in',curr_types.ids)])
-        return curr_finishings
-
 
     @http.route('/chd_init/<id>/',website=True)
     def call_configurator(self,**form_data):
