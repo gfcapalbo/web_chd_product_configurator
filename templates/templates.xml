@@ -166,12 +166,13 @@
                                                     <div class="row" style="border-bottom: 0.5px solid;padding-top: 2px;padding-bottom: 2px;">
                                                         <div class="col-xs-6" style="border-right: 0.5px solid;">
                                                             <label class="checkbox-inline">
-                                                                <input type="checkbox" t-att-name="'accessory'+curr_accessory.id" > <t t-esc="curr_accessory.name"/></input>
+                                                                <input type="checkbox" t-attf-name="accessory_#{str(curr_accessory.id)}" > <t t-esc="curr_accessory.name"/></input>
                                                             </label>
                                                         </div>
-                                                        <div class="col-xs-4" style="border-right: 0.5px solid;" t-att-name="curr_accessory.id">
+                                                        <div class="col-xs-4" style="border-right: 0.5px solid;">
                                                             <label id="small_listquantity" for="quantity_acc">Quantity</label>
-                                                            <input t-att-name="'accessory_qty'+'str('+curr_accessory.id')'" type="number" t-att-maxlength="3" t-att-size="4" />
+
+                                                            <input t-attf-name="accessory_qty#{str(curr_accessory.id)}" type="number" t-att-maxlength="3" t-att-size="4" />
                                                         </div>
                                                     </div>
                                                     </li>
@@ -206,7 +207,7 @@
         <div class="container">
         <h3>Sale options for <t t-esc="curr_product_id.name" /></h3>
         <form t-attf-action="/add_to_cart/#{ curr_product_id.id }/" method="post" >
-
+        <p><t t-esc="outputstuff" /></p>
 
         <button type="submit" class="btn btn-primary btn-lg pull-center" >Confirm Order</button>
         </form>

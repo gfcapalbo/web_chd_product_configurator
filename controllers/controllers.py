@@ -45,6 +45,7 @@ class Chd_init(http.Controller):
     def call_configurator(self,**form_data):
          Conf_products = http.request.env['product.template']
          return http.request.render('website_chd_product_configurator.configuration_options',{
+             'outputstuff': str(form_data),
              'curr_product_id': Conf_products.search([('id','=',form_data['id'])])
              })
 
