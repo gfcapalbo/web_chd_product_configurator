@@ -23,14 +23,18 @@ class Chd_init(http.Controller):
     def start(self,selected_id=False,type=False):
 
         Conf_products = http.request.env['product.template']
+        accessories = http.request.env['product.product']
         chd_types = http.request.env['product.type']
         chd_finishing = http.request.env['product.finishing']
         if http.request.httprequest.method == 'POST' and selected_id:
              curr_types = chd_types.search([('product_option_ids','in',[selected_id])])
              curr_product = Conf_products.search([('id','=',selected_id)])
+             # in the website module accessories will be written correctly, it's the same thing as the old accessoire typo.
+             avail_accessories = accessories.search([('id','in',curr_product.chd_accessoire_ids.ids)])
              return http.request.render('website_chd_product_configurator.configurator',{
                  'curr_product_id': curr_product,
                  'curr_types' : curr_types,
+                 'avail_accessories' : avail_accessories,
                  })
         return http.request.render('website_chd_product_configurator.conf_start',{
             'conf_products': Conf_products.search([('chd_origin_product','=',True)]),

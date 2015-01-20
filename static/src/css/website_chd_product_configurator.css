@@ -22,4 +22,16 @@
         width:200px;
         background-color:#ccc;
     }
+
+    ul li {
+    list-style-type: none;
+    }
+
+    ul li :checked{
+    background-color: green;
+    }
+    #small_listquantity
+    {
+    font-size:8px;
+    }
 </style>

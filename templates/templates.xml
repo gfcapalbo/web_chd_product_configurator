@@ -1,5 +1,4 @@
-
-  <openerp><data>
+ <openerp><data>
 
   <template id="assets_product_configurator" inherit_id="website.assets_frontend" name="chd_product_configurator">
   <xpath expr="." position="inside">
@@ -38,9 +37,9 @@
        <t t-set="title">Product Configurator</t>
           <div class="oe_structure"/>
           <div class="oe_structure">
-            <div class="container">
+          <div class="container">
             <h3>Configuration options for <t t-esc="curr_product_id.name" /></h3>
-            <form t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post" >
+            <form t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post" class="form-horizontal">
             <div class="form-control">
                 <label for="quantity"> Quantity </label>
                 <input type="text" name="quantity"/>
@@ -122,26 +121,50 @@
             </div>
             <div class="unselected-field" style="display: inline-block;">
                  <label>Finishing:
-                 <select t-attf-name="finishing" class= "form-control fini_selection" id="fini_select_id">
+                 <select t-attf-name="finishing" class= "form-group fini_selection" id="fini_select_id">
                     <!-- filled by js -->
                   </select>
                 </label>
             </div>
 
-            <h3> Attributes </h3>
-            <div class="form-control">
-                <label for="Accessories"> Accessories </label>
-                <label for="flag_image"> image </label>
-                <input type="image" name="flag_image"/>
-            </div>
-            <h4 id="out_msg"></h4>
-            <button type="submit" class="btn btn-primary btn-lg pull-center" >See Quotations</button>
+
+                <div class="form-group">
+                      <div class="col-xs-9">
+                            <h3> Attributes </h3>
+                            <label for="Accessories"> Available Accessories </label>
+                             <ul  t-attf-name="accessories" class="accessories_selection" id="accessories_select_id" t-att-multiple="multiple">
+                                          <t t-foreach="avail_accessories" t-as="curr_accessory">
+                                                    <li t-att-value="curr_accessory.id" >
+                                                    <div class="row" style="border-bottom: 0.5px solid;padding-top: 2px;padding-bottom: 2px;">
+                                                        <div class="col-xs-6" style="border-right: 0.5px solid;">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox"><t t-esc="curr_accessory.name"/></input>
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-xs-6" style="border-right: 0.5px solid;">
+                                                            <label id="small_listquantity" for="quantity_acc">Quantity</label>
+                                                            <input type="number" t-att-maxlength="3" t-att-width="4" name="quantity_acc"/>
+                                                        </div>
+                                                    </div>
+                                                    </li>
+                                          </t>
+                                </ul>
+                       </div>
+                   </div>
+                   <div class="form-group">
+                       <div class="col-xs-4">
+                            <h4 id="out_msg"></h4>
+                       </div>
+                       <div class="col-xs-2">
+                            <button type="submit" class="btn btn-primary btn-lg pull-center" >See Quotations</button>
+                        </div>
+                    </div>
+
             </form>
 
-            </div>
           </div>
-
-          <div class="oe_structure"/>
+       </div>
+      <div class="oe_structure"/>
 
           </t>
   </template>
