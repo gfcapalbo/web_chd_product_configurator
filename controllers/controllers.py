@@ -21,7 +21,6 @@ class product_template(orm.Model):
 class Chd_init(http.Controller):
     @http.route('/chd_init/',auth='public',website=True)
     def start(self,selected_id=False,type=False):
-
         Conf_products = http.request.env['product.template']
         accessories = http.request.env['product.product']
         chd_types = http.request.env['product.type']
@@ -49,9 +48,17 @@ class Chd_init(http.Controller):
     @http.route('/chd_init/<id>/',website=True)
     def call_configurator(self,**form_data):
          Conf_products = http.request.env['product.template']
+         curr_chd = 1
+         curr_chd = http.request.env['chd.product_configurator'].create({
+             'origin_product_id':form_data['product_id'],
+             'partner_id':1,
+             'state':'init',
+             'width': form_data['width'],
+         })
          return http.request.render('website_chd_product_configurator.configuration_options',{
              'outputstuff': str(form_data),
-             'curr_product_id': Conf_products.search([('id','=',form_data['id'])])
+             'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
+             'curr_chd': curr_chd,
              })
 
 
