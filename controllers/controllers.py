@@ -48,17 +48,33 @@ class Chd_init(http.Controller):
     @http.route('/chd_init/<id>/',website=True)
     def call_configurator(self,**form_data):
          Conf_products = http.request.env['product.template']
-         curr_chd = 1
-         curr_chd = http.request.env['chd.product_configurator'].create({
+         all_accessories = []
+         new_chd = http.request.env['chd.product_configurator'].create({
              'origin_product_id':form_data['product_id'],
              'partner_id':1,
              'state':'init',
              'width': form_data['width'],
+
          })
+         for key in form_data:
+             # get only accessories that have been checked, in future website validation will render this unnecessary.
+             if  ('accessoryid_' in key) and form_data[key] == 'on':
+                  # extrapolate the id encoded the name
+                  accessory_id = int(key.split('_')[1])
+                  # get the associated value by choosing the field with the right name
+                  # accessoryid_{id}=on/off   and the associate quantity would be qtyaccessoryid_{id}=9898
+                  accessory_qty = form_data['qtyaccessoryid_' + accessory_id]
+                  new_accessory = http.request.env['chd.product_configurator'].create({
+                     'product_id':accessory_id,
+                     'configurator_id':new_chd.id,
+                     'quantity':accessory_qty,
+                     })
+                  all_accessories.append(new_accessory)
          return http.request.render('website_chd_product_configurator.configuration_options',{
              'outputstuff': str(form_data),
              'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
-             'curr_chd': curr_chd,
+             'curr_chd': new_chd,
+             'all_accessories':all_accessories,
              })
 
 

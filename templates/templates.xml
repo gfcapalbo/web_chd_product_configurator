@@ -164,12 +164,12 @@
                                                     <div class="row" style="border-bottom: 0.5px solid;padding-top: 2px;padding-bottom: 2px;">
                                                         <div class="col-xs-6" style="border-right: 0.5px solid;">
                                                             <label class="checkbox-inline">
-                                                                <input type="checkbox" t-attf-name="accessory_id_#{str(curr_accessory.id)}" > <t t-esc="curr_accessory.name"/></input>
+                                                                <input type="checkbox" t-attf-name="accessoryid_#{str(curr_accessory.id)}" > <t t-esc="curr_accessory.name"/></input>
                                                             </label>
                                                         </div>
                                                         <div class="col-xs-4" style="border-right: 0.5px solid;">
                                                             <label id="small_listquantity" for="quantity_acc">Quantity</label>
-                                                            <input t-attf-name="qty_accessory_id_#{str(curr_accessory.id)}" type="number" t-att-maxlength="3" t-att-size="4" />
+                                                            <input t-attf-name="qtyaccessoryid_#{str(curr_accessory.id)}" type="number" t-att-maxlength="3" t-att-size="4" />
                                                         </div>
                                                     </div>
                                                     </li>
