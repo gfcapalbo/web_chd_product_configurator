@@ -54,7 +54,7 @@ class Chd_init(http.Controller):
              'partner_id':1,
              'state':'init',
              'width': form_data['width'],
-
+             'quantity': form_data['quantity']
          })
          for key in form_data:
              # get only accessories that have been checked, in future website validation will render this unnecessary.
@@ -64,17 +64,20 @@ class Chd_init(http.Controller):
                   # get the associated value by choosing the field with the right name
                   # accessoryid_{id}=on/off   and the associate quantity would be qtyaccessoryid_{id}=9898
                   accessory_qty = form_data['qtyaccessoryid_' + str(accessory_id)]
-                  new_accessory = http.request.env['chd.product_configurator'].create({
+                  new_accessory = http.request.env['chd.accessoire_line'].create({
                      'product_id':accessory_id,
                      'configurator_id':new_chd.id,
                      'quantity':accessory_qty,
                      })
                   all_accessories.append(new_accessory)
+         # _model refers to old API model, self.pool is not available in controller context (praise the lord for Holger!)
+         a = new_chd._model.calculate_price(http.request.cr,http.request.uid,[new_chd.id],context=http.request.context)
          return http.request.render('website_chd_product_configurator.configuration_options',{
              'outputstuff': str(form_data),
              'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
              'curr_chd': new_chd,
              'all_accessories':all_accessories,
+             'abc':a,
              })
 
 

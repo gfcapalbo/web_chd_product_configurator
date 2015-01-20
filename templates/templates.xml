@@ -206,6 +206,9 @@
         <form t-attf-action="/add_to_cart/#{ curr_product_id.id }/" method="post" >
         <p><t t-esc="outputstuff" /></p>
         <p><t t-esc="curr_chd" /></p>
+        <p><t t-esc="all_accessories" /></p>
+        <p><t t-esc="abc" /></p>
+
         <button type="submit" class="btn btn-primary btn-lg pull-center" >Confirm Order</button>
         </form>
         </div>
