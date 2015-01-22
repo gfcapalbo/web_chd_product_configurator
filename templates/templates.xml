@@ -39,161 +39,157 @@
           <div class="oe_structure">
           <div class="container">
             <h3>Configuration options for <t t-esc="curr_product_id.name" /></h3>
-            <form t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post" class="form-horizontal">
             <div class="row">
-                 <div class="col-sm-1" >
-                    <label for="quantity" >Quantity:</label>
-                 </div>
-                 <div class="col-sm-1" >
-                    <input type="number" name="quantity" class="form-control input-sm"/>
-                </div>
-            </div>
-
-            <div t-if="curr_product_id.chd_size_type in ('fixed')" class="row">
-                <div class="col-sm-8" >
-                    <label for="size"  >Size (fixed choices available):
-                        <select t-attf-name="size" class="form-control input-sm size_selection" id="size_select_id">
-                        <option></option>
-                        <t t-foreach="curr_product_id.chd_size_ids" t-as="curr_size">
-                             <option t-att-value="curr_size.id" >
-                                     <t t-esc="curr_size.name"/>
-                             </option>
-                        </t>
-                        </select>
-                    </label>
-                </div>
-            </div>
-            <div t-if="curr_product_id.chd_size_type in ('dynamic')" class="row">
-
-
-                    <div class="col-sm-6">
-                               <div class="row">
-                                    <div class="col-sm-2">
-                                        <label for="size">Width</label>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="number" size="7" name="width" class="form-control input-sm"/>
-                                    </div>
-                               </div>
-                               <div class="row">
-                                  <div class="col-sm-2">
-                                    <label for="size">Height</label>
-                                  </div>
-                                  <div class="col-sm-4">
-                                    <input type="number" size="7" name="height" class="form-control input-sm" />
-                                  </div>
-                               </div>
-                    </div>
-
-                <div class="col-xs-4">
-                    <div >
-                         <table>
-                         <thead>
-                            <tr>
-                                <td>
-                                <strong> Available size range:</strong>
-                                </td>
-                            </tr>
-                         </thead>
-                         <tbody>
-                            <tr>
-                                <td>
-                                 Minumum width:
-                                </td>
-                                <td>
-                                <t t-esc="curr_product_id.chd_min_width"/>
-                                </td>
-                            <td>
-                            ---
-                            </td>
-                                <td>
-                                  Maximum width:
-                                </td>
-                                <td>
-                                <t t-esc="curr_product_id.chd_max_width"/>
-                                </td>
-                            </tr>
-                              <tr>
-                                <td>
-                                   Minimum height:
-                                </td>
-                                <td>
-                                 <t t-esc="curr_product_id.chd_min_height"/>
-                                </td>
-                            <td>
-                            ---
-                            </td>
-                                <td>
-                                    Maximum height:
-                                </td>
-                                <td>
-                                  <t t-esc="curr_product_id.chd_max_height"/>
-                                </td>
-                            </tr>
-                         </tbody>
-                         </table>
-                    </div>
-                </div>
-           </div>
-            <div class="unselected-field" style="display: inline-block;">
-                 <label>Type:
-                 <select t-attf-name="type" class="form-control type_selection" id="type_select_id">
-                        <option></option>
-                        <t t-foreach="curr_types" t-as="curr_type">
-                        <option t-att-value="curr_type.id" class="form-control type_selection">
-                             <t t-esc="curr_type.name"/>
-                        </option>
-                    </t>
-                  </select>
-                </label>
-            </div>
-            <div class="unselected-field" style="display: inline-block;">
-                 <label>Finishing:
-                 <select t-attf-name="finishing" class= "form-control fini_selection" id="fini_select_id">
-                    <!-- filled by js -->
-                  </select>
-                </label>
-            </div>
-                 <div class="form-group">
-                      <div class="col-xs-9">
-                            <h3> Attributes </h3>
-                            <label for="Accessories"> Available Accessories </label>
-                             <ul  t-attf-name="accessories" class="accessories_selection" id="accessories_select_id" t-att-multiple="multiple">
-                                          <t t-foreach="avail_accessories" t-as="curr_accessory">
-                                                    <li t-att-value="curr_accessory.id" >
-                                                    <div class="row" style="border-bottom: 0.5px solid;padding-top: 2px;padding-bottom: 2px;">
-                                                        <div class="col-xs-6" style="border-right: 0.5px solid;">
-                                                            <label class="checkbox-inline">
-                                                                <input type="checkbox" t-attf-name="accessoryid_#{str(curr_accessory.id)}" > <t t-esc="curr_accessory.name"/></input>
-                                                            </label>
-                                                        </div>
-                                                        <div class="col-xs-4" style="border-right: 0.5px solid;">
-                                                            <label id="small_listquantity" for="quantity_acc">Quantity</label>
-                                                            <input t-attf-name="qtyaccessoryid_#{str(curr_accessory.id)}" type="number" t-att-maxlength="3" t-att-size="4" />
-                                                        </div>
-                                                    </div>
-                                                    </li>
-                                          </t>
-                                </ul>
-                       </div>
-                   </div>
-                   <div class="form-group">
-                       <div class="col-xs-4">
-                            <h4 id="out_msg"></h4>
-                       </div>
-                       <div class="col-xs-2">
-                            <button type="submit" class="btn btn-primary btn-lg pull-center" >See Quotations</button>
+                <div class="col-sm-9">
+                    <form t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post" class="form-horizontal">
+                    <div class="row">
+                         <div class="col-sm-1" >
+                            <label for="quantity" >Quantity:</label>
+                         </div>
+                         <div class="col-sm-1" >
+                            <input required="true" type="number"  min="0" name="quantity" class="form-control input-sm"/>
                         </div>
                     </div>
-            <input type="hidden" name="product_id" t-att-value="curr_product_id.id"/>
-            <input type="hidden" name="product_id_chd_size_type" t-att-value="curr_product_id.chd_size_type"/>
-            </form>
 
+                    <div t-if="curr_product_id.chd_size_type in ('fixed')" class="row">
+                        <div class="col-sm-8" >
+                            <label for="size"  >Size (fixed choices available):
+                                <select required="true" t-attf-name="size" class="form-control input-sm size_selection" id="size_select_id">
+                                <option></option>
+                                <t t-foreach="curr_product_id.chd_size_ids" t-as="curr_size">
+                                     <option  t-att-value="curr_size.id" >
+                                             <t t-esc="curr_size.name"/>
+                                     </option>
+                                </t>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div t-if="curr_product_id.chd_size_type in ('dynamic')" class="row">
+                            <div class="col-sm-6">
+                                       <div class="row">
+                                            <div class="col-sm-2">
+                                                <label for="size">Width</label>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input required="true" type="number"  min="0" size="7" name="width" class="form-control input-sm"/>
+                                            </div>
+                                       </div>
+                                       <div class="row">
+                                          <div class="col-sm-2">
+                                            <label for="size">Height</label>
+                                          </div>
+                                          <div class="col-sm-4">
+                                            <input required="true" type="number"  min="0" size="7" name="height" class="form-control input-sm" />
+                                          </div>
+                                       </div>
+                            </div>
+
+                        <div class="col-xs-4">
+                            <div >
+                                 <table>
+                                 <thead>
+                                    <tr>
+                                        <td>
+                                        <strong> Available size range:</strong>
+                                        </td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    <tr>
+                                        <td>
+                                         Width:
+                                        </td>
+                                        <td>
+                                        From <t t-esc="curr_product_id.chd_min_width"/> to <t t-esc="curr_product_id.chd_max_width"/>
+                                        </td>
+                                    </tr>
+                                      <tr>
+                                        <td>
+                                          height:
+                                        </td>
+                                        <td>
+                                         From <t t-esc="curr_product_id.chd_min_height"/> to <t t-esc="curr_product_id.chd_max_height"/>
+                                        </td>
+                                    </tr>
+                                 </tbody>
+                                 </table>
+                            </div>
+
+                        </div>
+                   </div>
+                    <div class="unselected-field" style="display: inline-block;">
+                         <label>Type:
+                         <select t-attf-name="type" class="form-control type_selection" id="type_select_id">
+                                <option></option>
+                                <t t-foreach="curr_types" t-as="curr_type">
+                                    <option t-att-value="curr_type.id" class="form-control type_selection">
+                                         <t t-esc="curr_type.name"/>
+                                    </option>
+                                </t>
+                          </select>
+                        </label>
+                    </div>
+                    <div class="unselected-field" style="display: inline-block;">
+                         <label>Finishing:
+                         <select t-attf-name="finishing" class= "form-control fini_selection" id="fini_select_id">
+                            <!-- filled by js -->
+                          </select>
+                        </label>
+                    </div>
+                         <div class="form-group">
+                              <div class="col-xs-9">
+                                    <h3> Attributes </h3>
+                                    <label for="Accessories"> Available Accessories </label>
+                                     <ul  t-attf-name="accessories" class="accessories_selection" id="accessories_select_id" t-att-multiple="multiple">
+                                                  <t t-foreach="avail_accessories" t-as="curr_accessory">
+                                                            <li t-att-value="curr_accessory.id" >
+                                                            <div class="row" style="border-bottom: 0.5px solid;padding-top: 2px;padding-bottom: 2px;">
+                                                                <div class="col-xs-7">
+                                                                    <label class="checkbox-inline">
+                                                                        <input type="checkbox" t-attf-name="accessoryid_#{str(curr_accessory.id)}" > <t t-esc="curr_accessory.name"/></input>
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-xs-5" style="border-left: 0.5px solid;">
+                                                                    <label id="small_listquantity" for="quantity_acc">Quantity</label>
+                                                                    <input t-attf-name="qtyaccessoryid_#{str(curr_accessory.id)}" type="number"  min="0" t-att-maxlength="3" t-att-size="4" />
+                                                                </div>
+                                                            </div>
+                                                            </li>
+                                                  </t>
+                                        </ul>
+                               </div>
+                           </div>
+                           <div class="form-group">
+                               <div class="col-xs-4">
+                                    <h4 id="out_msg"></h4>
+                               </div>
+                               <div class="col-xs-2">
+                                    <button type="submit" class="btn btn-primary btn-lg pull-center" >See Quotations</button>
+                                </div>
+                            </div>
+
+
+                    <input type="hidden" name="product_id" t-att-value="curr_product_id.id"/>
+                    <input type="hidden" name="product_id_chd_size_type" t-att-value="curr_product_id.chd_size_type"/>
+
+                    </form>
+                 </div>
+                 <div class="col-sm-3">
+                <div id="imagearea">
+                    <span t-field="curr_product_id.image" t-field-options='{"widget": "image", "class": "media-object" , "id" :"imagearea_default" }'/>
+                </div>
+                  <button type="button" class="btn btn-secondary btn-lg pull-right" id="therpimage" >upload img</button>
+                   <div id="feedback" t-if="errormsg">
+                      <h4><t t-esc="errormsg"/></h4>
+                   </div>
+                 </div>
+            </div>
           </div>
        </div>
-      <div class="oe_structure"/>
 
-          </t>
+      <div class="oe_structure"/>
+    </t>
   </template>
 
 

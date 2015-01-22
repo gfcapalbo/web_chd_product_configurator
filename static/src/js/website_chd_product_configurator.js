@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
 	$('.type_selection').each(function () {
 	    var type_selection = this;
 	    $(type_selection).on('click', '.type_selection', function ()
@@ -25,8 +26,20 @@ $(document).ready(function () {
 	    		  })
 	    });
 	});
+	$('#therpimage').each(function () {
+		var imageth=this;
+		$(imageth).on('click', imageth ,  function()
+				{
+					console.log( "imageclickincaughtclick" );
+					var website = openerp.website;
+					var _t = openerp._t;
+					console.log( "imageclick" );
+			        var element = new CKEDITOR.dom.element(document.getElementById( 'imagearea' ));
+			        var editor  = new website.editor.MediaDialog(imageth, element);
+			        editor.appendTo('feedback');
+				});
+	});
 
 });
-
 
 
