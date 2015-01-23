@@ -192,31 +192,69 @@
       <div class="oe_structure"/>
       <div class="oe_structure">
         <div class="container">
-        <h3>Sale options for <t t-esc="curr_product_id.name" /></h3>
-        <br/>
-        <t t-foreach="results" t-as="result">
-           <form t-attf-action="/chd_init/buy#{result.id}/" method="post" class="form-horizontal">
-               <input type="hidden" name="result_obj" t-att-value="result" />
-               <div  class="row" style="border-bottom: 0.5px solid;">
-               <br/>
-                    <div class="col-xs-4">
-                        <p>Cost price for supplier : <t t-esc="result.standard_price"/> </p>
-                        <p>Customer price : <t t-esc="result.customer_price"/> </p>
-                    </div>
-                    <div class="col-xs-4">
-                        <p>Total order amount ex. VAT : <t t-esc="result.total_amount_ex_vat"/> </p>
-                        <br/>
-                    </div>
-                    <div class="col-xs-4">
-                        <p>Expected date of delivery: <t t-esc="result.date_delivery"/> </p>
-                        <br/>
-                    </div>
-                <button type="submit" class="btn btn-primary btn-lg pull-right" >Choose option </button>
-                </div>
-                <p> <t t-esc="allstuff"/> </p>
-                <p> <t t-esc="message"/> </p>
-            </form>
-        </t>
+        <h3>Sale options for <t t-esc="curr_product_id.name" />  </h3>
+        <div class="row mt12">
+                           <div class="col-sm-8">
+                                          <div class="row mt12">
+                                                <div class="col-sm-4"><p><b>Product: </b></p></div>
+                                                <div class="col-sm-4"><t t-esc="curr_chd.origin_product_id.name" /></div>
+                                           </div>
+                                           <div class="row mt12">
+                                                <div class="col-sm-4"><p><b>config name: </b></p></div>
+                                                <div class="col-sm-6"><t t-esc="curr_chd.result_product_id.name" /></div>
+                                           </div>
+                                           <div class="row mt12">
+                                                <div class="col-sm-4"><p><b>Quantity: </b></p></div>
+                                                <div class="col-sm-4"><t t-esc="curr_chd.quantity" /></div>
+                                           </div>
+                                           <div class="row mt12">
+                                                <div class="col-sm-4"><p><b>HeightxWidth: </b></p></div>
+                                                <div class="col-sm-4"> <t t-esc="curr_chd.height" />  x  <t t-esc="curr_chd.width"/></div>
+                                           </div>
+                           </div>
+                           <div class="col-sm-4">
+                                  <div class="row mt12 solid">
+                                               <div class="row mt12">
+                                                    <div class="col-sm-6"><p><b>Chosen Accessories </b></p></div>
+                                               </div>
+                                               <div class="row mt12">
+                                                    <div class="col-sm-3"><p><b>Accessory </b></p></div>
+                                                    <div class="col-sm-3"><p><b>Quantity </b></p></div>
+                                               </div>
+                                               <div class="row mt32">
+                                                    <t t-foreach="curr_chd.accessoire_line_ids" t-as="curr_accessory">
+                                                        <div class="col-sm-3"><p><t t-esc="curr_accessory.product_id.name"/></p></div>
+                                                        <div class="col-sm-3"><p> <t t-esc="curr_accessory.quantity"/></p></div>
+                                                    </t>
+                                               </div>
+                                   </div>
+                           </div>
+
+        </div>
+        <separator/>
+        <div class="row mt12">
+                <t t-foreach="results" t-as="result">
+                   <form t-attf-action="/chd_init/buy#{result.id}/" method="post" class="form-horizontal">
+                       <input type="hidden" name="result_obj" t-att-value="result" />
+                       <div  class="row" style="border-bottom: 0.5px solid;" id="sale_option">
+                       <br/>
+                            <div class="col-xs-4">
+                                <p>Cost price for supplier : <t t-esc="result.standard_price"/> </p>
+                                <p>Customer price : <t t-esc="result.customer_price"/> </p>
+                            </div>
+                            <div class="col-xs-4">
+                                <p>Total order amount ex. VAT : <t t-esc="result.total_amount_ex_vat"/> </p>
+                                <br/>
+                            </div>
+                            <div class="col-xs-4">
+                                <p>Expected date of delivery: <t t-esc="result.date_delivery"/> </p>
+                                <br/>
+                            </div>
+                        <button id="buy" type="submit" class="btn btn-primary btn-lg pull-right" >Buy</button>
+                        </div>
+                    </form>
+                </t>
+         </div>
         </div>
       </div>
       <div class="oe_structure"/>

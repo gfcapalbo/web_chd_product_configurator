@@ -145,25 +145,8 @@ class Chd_init(http.Controller):
 
     @http.route('/chd_init/buy<id>/',website=True)
     def chosen_option(self,**form_data):
-        # method for deriving the latest open sales order
-        def get_last_open_salesorder(user_id):
-            partner = http.request.env['res.partner'].search([('user_account_id','=',user_id)])
-            saleorders = http.request.env['sale.order'].search([('partner_id','=',partner.id),('state','=','prepared')])
-            if len(saleorders) > 0:
-                return max(saleorders.ids)
-            else:
-                so_dict = {}
-                new_sale = http.request.env['sale.order'].create(so_dict)
-                return new_sale.id
-
-
-        # now i need to generate the sales order and the order line or new order, calling the
-
         result = http.request.env['chd.product_configurator.result'].search([('id','=',form_data['id'])])
         configurator = http.request.env['chd.product_configurator'].search([('id','=',result.configurator_id.id)])
-        # passing a normal dictionary, not frozendict to the default_get method, ala 7
-        context_7 = {}
-        context_7 = http.request.context
         http.request.context['active_id'] = result.id
         fields = ['order_id','return_to_order','display_order_id','result_id']
         doorder_model = http.request.env['chd.product_configurator.do_order']

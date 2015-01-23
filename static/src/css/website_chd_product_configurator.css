@@ -34,4 +34,15 @@
     {
     font-size:8px;
     }
+
+
+    .solid{
+       border:1px solid  #666666;
+       padding:3px;
+    }
+
+    #sale_option:hover
+    {
+    background-color:lightblue;
+    }
 </style>
