@@ -186,16 +186,17 @@
   </template>
 
 
-   <template id="configuration_options">
+   <template id="sale_options">
     <t t-call="website.layout">
-      <t t-set="title">Configuration Options</t>
+      <t t-set="title">Sale Options</t>
       <div class="oe_structure"/>
       <div class="oe_structure">
         <div class="container">
         <h3>Sale options for <t t-esc="curr_product_id.name" /></h3>
         <br/>
         <t t-foreach="results" t-as="result">
-           <form t-attf-action="/chd_init/buy#{ curr_product_id.id }/" method="post" class="form-horizontal">
+           <form t-attf-action="/chd_init/buy#{result.id}/" method="post" class="form-horizontal">
+               <input type="hidden" name="result_obj" t-att-value="result" />
                <div  class="row" style="border-bottom: 0.5px solid;">
                <br/>
                     <div class="col-xs-4">
@@ -212,11 +213,26 @@
                     </div>
                 <button type="submit" class="btn btn-primary btn-lg pull-right" >Choose option </button>
                 </div>
-                <h2> <t t-esc="allstuff"/> </h2>
-                <h2> <t t-esc="message"/> </h2>
+                <p> <t t-esc="allstuff"/> </p>
+                <p> <t t-esc="message"/> </p>
             </form>
         </t>
+        </div>
+      </div>
+      <div class="oe_structure"/>
+      </t>
+  </template>
 
+     <template id="buy_option">
+    <t t-call="website.layout">
+      <t t-set="title">Buy</t>
+      <div class="oe_structure"/>
+      <div class="oe_structure">
+        <div class="container">
+        <h3>Buy </h3>
+        <br/>
+        <h3> frobnicate! <t t-esc="allstuff"/> </h3>
+        <h3> frobnicate! <t t-esc="result"/> </h3>
         </div>
       </div>
       <div class="oe_structure"/>

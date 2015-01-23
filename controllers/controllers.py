@@ -6,7 +6,6 @@ from openerp.osv import fields,orm
 import json
 
 
-
 class product_template(orm.Model):
     _inherit = 'product.template'
     computed_floatdate = fields.float(compute='compute_total')
@@ -88,7 +87,6 @@ class Chd_init(http.Controller):
                      })
                   all_accessories.append(new_accessory)
          # _model refers to old API model, self.pool is not available in controller context (praise the lord for Holger!)
-
          try:
              new_chd._model.calculate_price(http.request.cr,http.request.uid,[new_chd.id],context=http.request.context)
          except:
@@ -107,41 +105,34 @@ class Chd_init(http.Controller):
                  'avail_accessories' : avail_accessories,
                  'errormsg': errormsg,
                  })
+         # if there aren't any errors, upload the image
+         if form_data['pic']:
+             import cgi,os
+             import cgitb; cgitb.enable()
 
-         import cgi,os
-         import cgitb; cgitb.enable()
+             try:  # Windows needs stdio set for binary mode.
+                 import msvcrt
+                 msvcrt.setmode (0,os.O_BINARY)  # stdin  = 0
+                 msvcrt.setmode (1,os.O_BINARY)  # stdout = 1
+             except ImportError:
+                 pass
 
-         try:  # Windows needs stdio set for binary mode.
-             import msvcrt
-             msvcrt.setmode (0,os.O_BINARY)  # stdin  = 0
-             msvcrt.setmode (1,os.O_BINARY)  # stdout = 1
-         except ImportError:
-             pass
+             form = cgi.FieldStorage()
 
-         form = cgi.FieldStorage()
+             # A nested FieldStorage instance holds the file
+             fileitem = form_data['pic']
 
-         # A nested FieldStorage instance holds the file
-         fileitem = form_data['pic']
+             # Test if the file was uploaded
+             if fileitem.filename:
+                # strip leading path from file name to avoid directory traversal attacks
+                fn = os.path.basename(fileitem.filename)
+                # open('files/' + fn,'wb').write(fileitem.stream.read())
+                open(fileitem.filename,'wb').write(fileitem.stream.read())
+                message = 'The file "' + fn + '" was uploaded successfully'
+             else:
+                message = 'No file was uploaded'
 
-         # Test if the file was uploaded
-         if fileitem.filename:
-
-            # strip leading path from file name to avoid directory traversal attacks
-            fn = os.path.basename(fileitem.filename)
-            # open('files/' + fn,'wb').write(fileitem.stream.read())
-            open(fileitem.filename,'wb').write(fileitem.stream.read())
-            message = 'The file "' + fn + '" was uploaded successfully'
-
-         else:
-            message = 'No file was uploaded'
-
-         print """\
-         Content-Type: text/html\n
-         <html><body>
-         <p>%s</p>
-         </body></html>
-         """ % (message,)
-         return http.request.render('website_chd_product_configurator.configuration_options',{
+         return http.request.render('website_chd_product_configurator.sale_options',{
              'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
              'curr_chd': new_chd,
              'all_accessories':all_accessories,
@@ -151,6 +142,46 @@ class Chd_init(http.Controller):
              })
 
 
+
+    @http.route('/chd_init/buy<id>/',website=True)
+    def chosen_option(self,**form_data):
+        # method for deriving the latest open sales order
+        def get_last_open_salesorder(user_id):
+            partner = http.request.env['res.partner'].search([('user_account_id','=',user_id)])
+            saleorders = http.request.env['sale.order'].search([('partner_id','=',partner.id),('state','=','prepared')])
+            if len(saleorders) > 0:
+                return max(saleorders.ids)
+            else:
+                so_dict = {}
+                new_sale = http.request.env['sale.order'].create(so_dict)
+                return new_sale.id
+
+
+        # now i need to generate the sales order and the order line or new order, calling the
+
+        result = http.request.env['chd.product_configurator.result'].search([('id','=',form_data['id'])])
+        configurator = http.request.env['chd.product_configurator'].search([('id','=',result.configurator_id.id)])
+        # passing a normal dictionary, not frozendict to the default_get method, ala 7
+        context_7 = {}
+        context_7 = http.request.context
+        http.request.context['active_id'] = result.id
+        fields = ['order_id','return_to_order','display_order_id','result_id']
+        doorder_model = http.request.env['chd.product_configurator.do_order']
+        # again, access 7.0 with ._model property
+        a = doorder_model._model.default_get(http.request.cr,http.request.uid,fields_list=fields,context=http.request.context)
+
+        """vals = {
+            'result_id': form_data['id'],
+            'order_id': get_last_open_salesorder(1),
+            'return_to_order': False ,
+            }
+        order = http.request.env['chd.product_configurator.do_order'].create(vals)"""
+        return http.request.render('website_chd_product_configurator.buy_option',{
+                'allstuff':str(form_data),
+                })
+
+
+    # method for fetching finishing options via json
     @http.route('/chd_init/getch/',type='json',website=True)
     def tr(self,type_id):
         curr_types = http.request.env['product.finishing'].search([('type_option_ids','in',[type_id])])
@@ -163,6 +194,15 @@ class Chd_init(http.Controller):
             context=http.request.context
             ))
         return data
+
+
+
+
+
+
+
+
+
 
 
 
