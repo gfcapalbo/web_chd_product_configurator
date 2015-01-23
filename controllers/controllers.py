@@ -107,11 +107,47 @@ class Chd_init(http.Controller):
                  'avail_accessories' : avail_accessories,
                  'errormsg': errormsg,
                  })
+
+         import cgi,os
+         import cgitb; cgitb.enable()
+
+         try:  # Windows needs stdio set for binary mode.
+             import msvcrt
+             msvcrt.setmode (0,os.O_BINARY)  # stdin  = 0
+             msvcrt.setmode (1,os.O_BINARY)  # stdout = 1
+         except ImportError:
+             pass
+
+         form = cgi.FieldStorage()
+
+         # A nested FieldStorage instance holds the file
+         fileitem = form_data['pic']
+
+         # Test if the file was uploaded
+         if fileitem.filename:
+
+            # strip leading path from file name to avoid directory traversal attacks
+            fn = os.path.basename(fileitem.filename)
+            # open('files/' + fn,'wb').write(fileitem.stream.read())
+            open(fileitem.filename,'wb').write(fileitem.stream.read())
+            message = 'The file "' + fn + '" was uploaded successfully'
+
+         else:
+            message = 'No file was uploaded'
+
+         print """\
+         Content-Type: text/html\n
+         <html><body>
+         <p>%s</p>
+         </body></html>
+         """ % (message,)
          return http.request.render('website_chd_product_configurator.configuration_options',{
              'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
              'curr_chd': new_chd,
              'all_accessories':all_accessories,
              'results':results,
+             'allstuff':str(form_data),
+             'message':message,
              })
 
 
