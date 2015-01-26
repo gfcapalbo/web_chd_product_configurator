@@ -37,12 +37,12 @@
 
 
     .solid{
-       border:1px solid  #666666;
-       padding:3px;
+       border:1px solid #D0D0D0 ;
+       padding:4px;
     }
 
     #sale_option:hover
     {
-    background-color:lightblue;
+    background-color:#F8F8F8;
     }
 </style>

@@ -17,9 +17,8 @@ class product_template(orm.Model):
 
 
 class Chd_init(http.Controller):
+
     @http.route('/chd_init/',auth='public',website=True)
-
-
     def start(self,selected_id=False,type=False):
         Conf_products = http.request.env['product.template']
         accessories = http.request.env['product.product']
@@ -65,11 +64,30 @@ class Chd_init(http.Controller):
             chd_size = http.request.env['chd.size'].search([('id','=',form_data['size'])])
             chd_dict['width'] = chd_size.width
             chd_dict['height'] = chd_size.height
+
          else:
             chd_dict['width'] = form_data['width']
             chd_dict['height'] = form_data['height']
 
-         new_chd = http.request.env['chd.product_configurator'].create(chd_dict)
+
+
+         # if there aren't any errors, upload the image
+         message = ''
+         if Conf_products.search([('id','=',form_data['product_id'])])[0].chd_configurator_has_image:
+
+             import werkzeug
+             import base64
+             try:
+                 fileitem = form_data['pic']
+                 # add uploaded image to configurator
+                 chd_dict['image'] = base64.b64encode(fileitem.stream.read())
+                 chd_dict['image_filename'] = fileitem.filename
+                 message = 'image uploaded successfully'
+             except:
+                 message = 'there where problems uploading your image, contact us'
+         if message == '': message = 'no image needed for this product'
+
+         # add accessories to the configurator
          for key in form_data:
              # get only accessories that have been checked, in future website validation will render this unnecessary.
              if  ('accessoryid_' in key) and form_data[key] == 'on':
@@ -86,6 +104,12 @@ class Chd_init(http.Controller):
                      'quantity':accessory_qty,
                      })
                   all_accessories.append(new_accessory)
+
+
+         new_chd = http.request.env['chd.product_configurator'].create(chd_dict)
+
+
+         # our product configurator is ready, we can now calculate options
          # _model refers to old API model, self.pool is not available in controller context (praise the lord for Holger!)
          try:
              new_chd._model.calculate_price(http.request.cr,http.request.uid,[new_chd.id],context=http.request.context)
@@ -105,39 +129,13 @@ class Chd_init(http.Controller):
                  'avail_accessories' : avail_accessories,
                  'errormsg': errormsg,
                  })
-         # if there aren't any errors, upload the image
-         if form_data['pic']:
-             import cgi,os
-             import cgitb; cgitb.enable()
-
-             try:  # Windows needs stdio set for binary mode.
-                 import msvcrt
-                 msvcrt.setmode (0,os.O_BINARY)  # stdin  = 0
-                 msvcrt.setmode (1,os.O_BINARY)  # stdout = 1
-             except ImportError:
-                 pass
-
-             form = cgi.FieldStorage()
-
-             # A nested FieldStorage instance holds the file
-             fileitem = form_data['pic']
-
-             # Test if the file was uploaded
-             if fileitem.filename:
-                # strip leading path from file name to avoid directory traversal attacks
-                fn = os.path.basename(fileitem.filename)
-                # open('files/' + fn,'wb').write(fileitem.stream.read())
-                open(fileitem.filename,'wb').write(fileitem.stream.read())
-                message = 'The file "' + fn + '" was uploaded successfully'
-             else:
-                message = 'No file was uploaded'
 
          return http.request.render('website_chd_product_configurator.sale_options',{
              'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
              'curr_chd': new_chd,
              'all_accessories':all_accessories,
              'results':results,
-             'allstuff':str(form_data),
+             'configuration_form':str(form_data),
              'message':message,
              })
 
