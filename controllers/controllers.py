@@ -22,20 +22,25 @@ class Chd_init(http.Controller):
     def start(self,selected_id=False,type=False):
         Conf_products = http.request.env['product.template']
         accessories = http.request.env['product.product']
+        chd_price_components_at = http.request.env['price.component.attribute.template']
         chd_types = http.request.env['product.type']
         chd_finishing = http.request.env['product.finishing']
         # when posting a selected product to configure
         if http.request.httprequest.method == 'POST' and selected_id:
              curr_types = chd_types.search([('product_option_ids','in',[selected_id])])
              curr_product = Conf_products.search([('id','=',selected_id)])
-             # accessories=old accessoire typo in product configurator.
+             curr_chd_price_component_ats = chd_price_components_at.search(
+                 [('id','in',curr_product.attribute_template_ids.ids),
+                     ('active','=',True)
+                     ])
              avail_accessories = accessories.search([('id','in',curr_product.chd_accessoire_ids.ids)])
              return http.request.render('website_chd_product_configurator.configurator',{
                  'curr_product_id': curr_product,
                  'curr_types' : curr_types,
+                 'curr_chd_price_component_ats': curr_chd_price_component_ats,
                  'avail_accessories' : avail_accessories,
                  })
-        # first iteration ,whe loading the page
+        # first iteration, loading the page
         return http.request.render('website_chd_product_configurator.conf_start',{
             'conf_products': Conf_products.search([('chd_origin_product','=',True)]),
         })
@@ -51,6 +56,9 @@ class Chd_init(http.Controller):
          errormsg = ""
          Conf_products = http.request.env['product.template']
          chd_results = http.request.env['chd.product_configurator.result']
+         curr_product_id = Conf_products.search([('id','=',form_data['id'])])
+         chd_price_components_at = http.request.env['price.component.attribute.template']
+
          all_accessories = []
          chd_dict = {
              'origin_product_id':form_data['product_id'],
@@ -91,7 +99,7 @@ class Chd_init(http.Controller):
 
 
          new_chd = http.request.env['chd.product_configurator'].create(chd_dict)
-         # add accessories to the configurator
+         # add accessories and price components selections to the configurator
          for key in form_data:
              # get only accessories that have been checked, in future website validation will render this unnecessary.
              if  ('accessoryid_' in key) and form_data[key] == 'on':
@@ -108,6 +116,20 @@ class Chd_init(http.Controller):
                      'quantity':accessory_qty,
                      })
                   all_accessories.append(new_accessory)
+             elif ('pricecomponent_' in key) :
+                 # if it is of type "string" the value is the index of the selection in pricecomponent_name, the id is encoded in the key
+                 if 'pricecomponent_string' in key:
+                     pricecomponent_id = int(key.split('_')[3])
+
+                 # if it is of type numerical the value is the actual value of the pricecomponent_name, the id is encoded in the key
+                 if 'pricecomponent_int' in key:
+                     pricecomponent_id = int(key.split('_')[3])
+
+
+
+
+
+
 
          # our product configurator is ready, we can now calculate options
          # _model refers to old API model, self.pool is not available in controller context (praise the lord for Holger!)
@@ -121,17 +143,21 @@ class Chd_init(http.Controller):
              Conf_products = http.request.env['product.template']
              accessories = http.request.env['product.product']
              curr_types = chd_types.search([('product_option_ids','in',[form_data['product_id']])])
-             curr_product = Conf_products.search([('id','=',form_data['product_id'])])
-             avail_accessories = accessories.search([('id','in',curr_product.chd_accessoire_ids.ids)])
+             avail_accessories = accessories.search([('id','in',curr_product_id.chd_accessoire_ids.ids)])
+             curr_chd_price_component_ats = chd_price_components_at.search(
+                 [('id','in',curr_product_id.attribute_template_ids.ids),
+                     ('active','=',True)
+                     ])
              return http.request.render('website_chd_product_configurator.configurator',{
-                 'curr_product_id': curr_product,
+                 'curr_product_id': curr_product_id,
                  'curr_types' : curr_types,
                  'avail_accessories' : avail_accessories,
+                 'curr_chd_price_component_ats': curr_chd_price_component_ats,
                  'errormsg': errormsg,
                  })
 
          return http.request.render('website_chd_product_configurator.sale_options',{
-             'curr_product_id': Conf_products.search([('id','=',form_data['id'])]),
+             'curr_product_id': curr_product_id,
              'curr_chd': new_chd,
              'all_accessories':all_accessories,
              'results':results,
