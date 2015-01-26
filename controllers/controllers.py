@@ -87,6 +87,10 @@ class Chd_init(http.Controller):
                  message = 'there where problems uploading your image, contact us'
          if message == '': message = 'no image needed for this product'
 
+
+
+
+         new_chd = http.request.env['chd.product_configurator'].create(chd_dict)
          # add accessories to the configurator
          for key in form_data:
              # get only accessories that have been checked, in future website validation will render this unnecessary.
@@ -104,10 +108,6 @@ class Chd_init(http.Controller):
                      'quantity':accessory_qty,
                      })
                   all_accessories.append(new_accessory)
-
-
-         new_chd = http.request.env['chd.product_configurator'].create(chd_dict)
-
 
          # our product configurator is ready, we can now calculate options
          # _model refers to old API model, self.pool is not available in controller context (praise the lord for Holger!)
