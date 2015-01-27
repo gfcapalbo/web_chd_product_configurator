@@ -1,5 +1,7 @@
  <openerp><data>
 
+ <!--Warning: the field names encode data used both by javascript and python back-end, before changing read code -->
+
   <template id="assets_product_configurator" inherit_id="website.assets_frontend" name="chd_product_configurator">
   <xpath expr="." position="inside">
       <script type="text/javascript" src="/website_chd_product_configurator/static/src/js/website_chd_product_configurator.js"></script>
@@ -152,7 +154,7 @@
                                                     <div  class="col-sm-8" >
                                                         <div t-if="curr_chd_price_component_at.property_id.type in ('string')" class="row">
                                                                   <div class="col-sm-12" >
-                                                                       <select   t-attf-name="pricecomponent_string_id_#{str(curr_chd_price_component_at.property_id.id)}" class="form-control">
+                                                                       <select   t-attf-name="pricecomponent_string_id_#{str(curr_chd_price_component_at.id)}" class="form-control">
                                                                                 <option></option>
                                                                                 <t t-foreach="curr_chd_price_component_at.string_value_ids" t-as="curr_pc">
                                                                                     <option t-att-value="curr_pc.id" >
@@ -164,7 +166,7 @@
                                                         </div>
                                                         <div t-if="curr_chd_price_component_at.property_id.type in ('int')" class="row">
                                                                  <div class="col-sm-12" >
-                                                                       <input required="true" type="number"  min="0"  t-attf-name="pricecomponent_int_id_#{str(curr_chd_price_component_at.property_id.id)}" />
+                                                                       <input required="true" type="number"  min="0"  t-attf-name="pricecomponent_int_id_#{str(curr_chd_price_component_at.id)}" />
                                                                  </div>
                                                         </div>
                                                     </div>
@@ -186,12 +188,12 @@
                                                             <div class="row" style="border-bottom: 0.5px solid;padding-top: 2px;padding-bottom: 2px;">
                                                                 <div class="col-xs-7">
                                                                     <label class="checkbox-inline">
-                                                                        <input type="checkbox" t-attf-name="accessoryid_#{str(curr_accessory.id)}" > <t t-esc="curr_accessory.name"/></input>
+                                                                        <input type="checkbox" t-attf-name="accessoryid_#{str(curr_accessory.id)}_#{str(curr_accessory.name)}" > <t t-esc="curr_accessory.name"/></input>
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-xs-5" style="border-left: 0.5px solid;">
                                                                     <label id="small_listquantity" for="quantity_acc">Quantity</label>
-                                                                    <input t-attf-name="qtyaccessoryid_#{str(curr_accessory.id)}" type="number"  min="0" t-att-maxlength="3" t-att-size="4" />
+                                                                    <input t-attf-name="qtyaccessoryid_#{str(curr_accessory.id)}_#{str(curr_accessory.name)}" type="number"  min="0" t-att-maxlength="3" t-att-size="4" />
                                                                 </div>
                                                             </div>
                                                             </li>
@@ -201,7 +203,7 @@
                            </div>
                            <div class="form-group">
                                <div class="col-xs-4">
-                                    <p id="out_msg"></p>
+
                                </div>
                                <div class="col-xs-2">
                                     <button type="submit" class="btn btn-primary btn-lg pull-center" >See Quotations</button>
@@ -210,14 +212,20 @@
                     <input type="hidden" name="product_id" t-att-value="curr_product_id.id"/>
                     <input type="hidden" name="product_id_chd_size_type" t-att-value="curr_product_id.chd_size_type"/>
                  </div>
-                     <div t-if="curr_product_id.chd_configurator_has_image" class="col-sm-3">
-                            <div id="imagearea">
+                     <div  class="col-sm-3">
+                            <div t-if="curr_product_id.chd_configurator_has_image" id="imagearea">
                                   <input class="btn btn-default btn-lg pull-left" type="file" name="pic" accept="image/*" required="true"/>
                             </div>
-                            <div id="feedback" t-if="errormsg">
-                                  <p><t t-esc="errormsg"/></p>
-                            </div>
-                     </div>
+                            <div id="feedback">
+			                      <div id="preferences" class="row">
+										<h4>Preferences</h4>
+			                      </div>
+			                      <div id="accessory_preferences" class="row">
+										<h4>Accessories</h4>
+			                     </div>
+		                    </div>
+
+                   </div>
             </div>
            </form>
           </div>
@@ -256,11 +264,10 @@
                            <div class="col-sm-4">
                                   <div class="row mt12 solid">
                                                <div class="row mt12">
-                                                    <div class="col-sm-6"><p><b>Chosen Accessories </b></p></div>
+                                                    <div class="col-sm-6"><p><b><t t-esc="feedback"/></b></p></div>
                                                </div>
                                                <div class="row mt12">
-                                                    <div class="col-sm-3"><p><b>Accessory </b></p></div>
-                                                    <div class="col-sm-3"><p><b>Quantity </b></p></div>
+
                                                </div>
                                                <div class="row mt32">
                                                     <t t-foreach="curr_chd.accessoire_line_ids" t-as="curr_accessory">

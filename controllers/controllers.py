@@ -4,6 +4,7 @@ from openerp import api
 from datetime import  datetime
 from openerp.osv import fields,orm
 import json
+from gdata.tlslite.utils.jython_compat import SelfTestBase
 
 
 class product_template(orm.Model):
@@ -50,7 +51,7 @@ class Chd_init(http.Controller):
         curr_finishings = chd_finishing.search([('type_option_ids','in',curr_types.ids)])
         return curr_finishings
 
-
+    # shows the options list
     @http.route('/chd_init/<id>/',website=True)
     def call_configurator(self,**form_data):
          errormsg = ""
@@ -60,8 +61,9 @@ class Chd_init(http.Controller):
          chd_price_components_at = http.request.env['price.component.attribute.template']
 
          all_accessories = []
+         all_attributes = {}
          chd_dict = {
-             'origin_product_id':form_data['product_id'],
+             'origin_product_id':curr_product_id.ids[0],
              'partner_id':1,
              'state':'config',
              'quantity': form_data['quantity']
@@ -83,9 +85,10 @@ class Chd_init(http.Controller):
          message = ''
          if Conf_products.search([('id','=',form_data['product_id'])])[0].chd_configurator_has_image:
 
-             import werkzeug
-             import base64
+
              try:
+                 import werkzeug
+                 import base64
                  fileitem = form_data['pic']
                  # add uploaded image to configurator
                  chd_dict['image'] = base64.b64encode(fileitem.stream.read())
@@ -96,18 +99,37 @@ class Chd_init(http.Controller):
          if message == '': message = 'no image needed for this product'
 
 
+         for key in form_data:
+             if ('pricecomponent_' in key) :
+                 # if it is of type "string" the value is the index of the selection in pricecomponent_name, the id is encoded in the key
+                 if 'pricecomponent_string' in key:
+                     pricecomponent_id = int(key.split('_')[3])
+                     pricecomponent_value = form_data[key]
 
+                 # if it is of type numerical the value is the actual value of the pricecomponent field, the id is encoded in the key
+                 if 'pricecomponent_int' in key:
+                     pricecomponent_id = int(key.split('_')[3])
+                     pricecomponent_value = form_data[key]
 
+                 # the configurator stores the attributes in a dictionary in the "attributes" field ,
+                 all_attributes['_attribute_' + str(pricecomponent_id)] = int(pricecomponent_value)
+
+         # add attributes to the configurator
+         chd_dict['attributes'] = str(all_attributes)
+         # dictionary is complete, create configurator
          new_chd = http.request.env['chd.product_configurator'].create(chd_dict)
+         # get attribute fields
+         # attribute_fields = new_chd._model.get_attribute_fields_view(http.request.cr,http.request.uid,[curr_product_id.ids[0]],context=http.request.context)
+
          # add accessories and price components selections to the configurator
          for key in form_data:
-             # get only accessories that have been checked, in future website validation will render this unnecessary.
+             # get only accessories that have been checked
              if  ('accessoryid_' in key) and form_data[key] == 'on':
                   # extrapolate the id encoded the name
                   accessory_id = int(key.split('_')[1])
                   # get the associated value by choosing the field with the right name
                   # accessoryid_{id}=on/off   and the associate quantity would be qtyaccessoryid_{id}=9898
-                  accessory_qty = form_data['qtyaccessoryid_' + str(accessory_id)]
+                  accessory_qty = form_data['qty' + key]
                   if accessory_qty == 0:
                     alert_msg += "An accessory has been selected with quantity 0, please specify quantity"
                   new_accessory = http.request.env['chd.accessoire_line'].create({
@@ -116,33 +138,19 @@ class Chd_init(http.Controller):
                      'quantity':accessory_qty,
                      })
                   all_accessories.append(new_accessory)
-             elif ('pricecomponent_' in key) :
-                 # if it is of type "string" the value is the index of the selection in pricecomponent_name, the id is encoded in the key
-                 if 'pricecomponent_string' in key:
-                     pricecomponent_id = int(key.split('_')[3])
-
-                 # if it is of type numerical the value is the actual value of the pricecomponent_name, the id is encoded in the key
-                 if 'pricecomponent_int' in key:
-                     pricecomponent_id = int(key.split('_')[3])
-
-
-
-
-
-
 
          # our product configurator is ready, we can now calculate options
          # _model refers to old API model, self.pool is not available in controller context (praise the lord for Holger!)
          try:
-             new_chd._model.calculate_price(http.request.cr,http.request.uid,[new_chd.id],context=http.request.context)
+             res = new_chd._model.calculate_price(http.request.cr,http.request.uid,[new_chd.id],context=http.request.context)
          except:
              errormsg = "No result found for the values that you entered. We would be happy to give you a custom quote. Please call 010-7856766"
          results = chd_results.search([('configurator_id','=',new_chd.id)])
-         if errormsg != "":
+         if errormsg != "" and len(results.ids) == 0:
              chd_types = http.request.env['product.type']
              Conf_products = http.request.env['product.template']
              accessories = http.request.env['product.product']
-             curr_types = chd_types.search([('product_option_ids','in',[form_data['product_id']])])
+             curr_types = chd_types.search([('product_option_ids','in',[int(form_data['product_id'])])])
              avail_accessories = accessories.search([('id','in',curr_product_id.chd_accessoire_ids.ids)])
              curr_chd_price_component_ats = chd_price_components_at.search(
                  [('id','in',curr_product_id.attribute_template_ids.ids),
@@ -175,7 +183,7 @@ class Chd_init(http.Controller):
         fields = ['order_id','return_to_order','display_order_id','result_id']
         doorder_model = http.request.env['chd.product_configurator.do_order']
         # again, access 7.0 with ._model property
-        a = doorder_model._model.default_get(http.request.cr,http.request.uid,fields_list=fields,context=http.request.context)
+        doorder_model._model.default_get(http.request.cr,http.request.uid,fields_list=fields,context=http.request.context)
 
         """vals = {
             'result_id': form_data['id'],
@@ -206,7 +214,11 @@ class Chd_init(http.Controller):
 
 
 
+    def recalculate_description(Self,formdata):
+        res = "chosen options"
 
+
+        return res
 
 
 

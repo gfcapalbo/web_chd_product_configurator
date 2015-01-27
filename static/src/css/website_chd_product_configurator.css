@@ -35,6 +35,13 @@
     font-size:8px;
     }
 
+    .quotation
+    {
+    font-size : 12px;
+    font-weight : bold;
+    font-color: darkgrey;
+    }
+
 
     .solid{
        border:1px solid #D0D0D0 ;
