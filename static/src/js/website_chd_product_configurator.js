@@ -46,14 +46,20 @@ $(document).ready(function () {
 						var rawname = element.name;
 						var name = rawname.split("_");
 						console.log(name);
-						if ((name.length > 2) && ((name[0] == 'qtyaccessoryid') || (name[0] == 'accessoryid')))  {
-							var newcontent = document.createTextNode(name[2] +" : " + value);
-						}
-						if ((name.length > 2) && (name[0] == 'pricecomponent'))  {
-							var newcontent = document.createTextNode(name[3] +" : " + value);
+						if (name.length > 2){
+							if (name[0] == 'qtyaccessoryid') {
+								var newcontent = document.createTextNode(name[2] +" : " + value);
+								}
+							else if (name[0] == 'accessoryid') 	{
+								var newcontent = document.createTextNode(name[2] +" : " + value);
+								}
+							else if (name[0] == 'pricecomponent') {
+								var newcontent = document.createTextNode(name[3] +" : " + value);
+								}
 						} else {
 							var newcontent = document.createTextNode(rawname +" : " + value);
-						}
+							}
+
 						currdiv.appendChild(newcontent);
 						if (name[0] == 'qtyaccessoryid') {
 							var feedback_container= document.getElementById("accessory_preferences");
@@ -70,11 +76,13 @@ $(document).ready(function () {
 	//added after on submit , with the rest of the form fields.
 	$("#mainf").submit( function()
 		        {
+		 			var elements = document.querySelectorAll( 'feedback *' );
 		 			$('<input />').attr('type', 'hidden')
 			         .attr('name', "feedback")
-			         .attr('value', document.getElementById("feedback").innerHTML)
+			         .attr('value', elements)
 			         .appendTo('#mainf');
     	             return true;
+    	             debugger;
 		        });
 });
 
