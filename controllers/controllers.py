@@ -1,20 +1,12 @@
 # -*- coding: utf-8 -*-
 from openerp import http
-from openerp import api,tools
+from openerp import api
 from datetime import  datetime
 from openerp.osv import fields,orm
 import json
 from gdata.tlslite.utils.jython_compat import SelfTestBase
 
 
-class product_template(orm.Model):
-    _inherit = 'product.template'
-    computed_floatdate = fields.float(compute='compute_total')
-
-    @api.multi
-    @api.depends('product_template.product_option_ids')
-    def compute_total(self):
-        return float(datetime.now())
 
 
 class Chd_init(http.Controller):
@@ -185,13 +177,6 @@ class Chd_init(http.Controller):
         doorder_model = http.request.env['chd.product_configurator.do_order']
         # again, access 7.0 with ._model property
         doorder_model._model.default_get(http.request.cr,http.request.uid,fields_list=fields,context=http.request.context)
-
-        """vals = {
-            'result_id': form_data['id'],
-            'order_id': get_last_open_salesorder(1),
-            'return_to_order': False ,
-            }
-        order = http.request.env['chd.product_configurator.do_order'].create(vals)"""
         return http.request.render('website_chd_product_configurator.buy_option',{
                'summary':form_data['summary'],
                 })
@@ -211,24 +196,10 @@ class Chd_init(http.Controller):
             ))
         return data
 
-
-
-
-
     def recalculate_description(Self,formdata):
         res = "chosen options"
         return res
 
-    # display current users wishlist
-    @http.route('/chd_init/<id>/wishlist/' ,website=True)
-    def wish(self,id):
-        return True
-
-
-    # add to user's wishlist
-    @http.route('/chd_init/<id>/addwishlist/' ,type='json',website=True)
-    def wishadd(self,id):
-        return True
 
 
 

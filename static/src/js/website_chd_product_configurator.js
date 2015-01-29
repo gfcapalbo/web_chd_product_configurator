@@ -11,11 +11,12 @@ $(document).ready(function () {
 	    			  			var  dd_list=document.getElementById("type_select_id");
 	    			  			var data_js = eval(data);
 	    			  			$('#fini_select_id').empty();
+	    			  			$('#fini_select_id').append("<option></option>");
 	    			  			for (var key in data_js)
-	    			  			{
-	    			  			    if (data_js.hasOwnProperty(key))
+	    			  			{if (data_js.hasOwnProperty(key))
 	    			  			    {
 	    			  			        $('#fini_select_id').append("<option value='" +data_js[key].id+ "'>"+ data_js[key].name+ "</option>");
+
 	    			  			    }
 	    			  			}
 	    		  })
