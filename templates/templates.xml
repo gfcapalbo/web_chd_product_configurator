@@ -144,7 +144,7 @@
                     <!-- generation of product price attributes, all required -->
                     <div class="form group">
                               <div class="col-xs-12">
-                                   <h3> Additional parameters for product (required) </h3>
+                                   <h3 t-if="len(curr_chd_price_component_ats) &gt; 1"> Additional parameters for product (required) </h3>
                                         <t t-foreach="curr_chd_price_component_ats" t-as="curr_chd_price_component_at">
                                             <!-- i am exluding quantity -->
                                             <div t-if="curr_chd_price_component_at.property_id.name != 'Quantity'" class="row">
@@ -154,7 +154,7 @@
                                                     <div  class="col-sm-8" >
                                                         <div t-if="curr_chd_price_component_at.property_id.type in ('string')" class="row">
                                                                   <div class="col-sm-12" >
-                                                                       <select   t-attf-name="pricecomponent_string_id_#{str(curr_chd_price_component_at.id)}" class="form-control">
+                                                                       <select   t-attf-name="pricecomponent_string_id_#{str(curr_chd_price_component_at.id)}_#{str(curr_chd_price_component_at.property_name)}" class="form-control">
                                                                                 <option></option>
                                                                                 <t t-foreach="curr_chd_price_component_at.string_value_ids" t-as="curr_pc">
                                                                                     <option t-att-value="curr_pc.id" >
@@ -166,7 +166,7 @@
                                                         </div>
                                                         <div t-if="curr_chd_price_component_at.property_id.type in ('int')" class="row">
                                                                  <div class="col-sm-12" >
-                                                                       <input required="true" type="number"  min="0"  t-attf-name="pricecomponent_int_id_#{str(curr_chd_price_component_at.id)}" />
+                                                                       <input required="true" type="number"  min="0"  t-attf-name="pricecomponent_int_id_#{str(curr_chd_price_component_at.id)}_#{str(curr_chd_price_component_at.property_name)}" />
                                                                  </div>
                                                         </div>
                                                     </div>
@@ -179,8 +179,8 @@
 
 
                          <div class="form-group">
-                              <div class="col-xs-9">
-                                    <h3> Attributes </h3>
+                              <div class="col-xs-9" t-if="len(avail_accessories) &gt; 0">
+                                    <h3 > Attributes </h3>
                                     <label for="Accessories"> Available Accessories </label>
                                      <ul  t-attf-name="accessories" class="accessories_selection" id="accessories_select_id" t-att-multiple="multiple">
                                                   <t t-foreach="avail_accessories" t-as="curr_accessory">
@@ -188,7 +188,7 @@
                                                             <div class="row" style="border-bottom: 0.5px solid;padding-top: 2px;padding-bottom: 2px;">
                                                                 <div class="col-xs-7">
                                                                     <label class="checkbox-inline">
-                                                                        <input type="checkbox" t-attf-name="accessoryid_#{str(curr_accessory.id)}_#{str(curr_accessory.name)}" > <t t-esc="curr_accessory.name"/></input>
+                                                                        <p> <t t-esc="curr_accessory.name"/></p>
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-xs-5" style="border-left: 0.5px solid;">
@@ -216,12 +216,17 @@
                             <div t-if="curr_product_id.chd_configurator_has_image" id="imagearea">
                                   <input class="btn btn-default btn-lg pull-left" type="file" name="pic" accept="image/*" required="true"/>
                             </div>
+
                             <div id="feedback">
-			                      <div id="preferences" class="row">
-										<h4>Preferences</h4>
+			                	  <div id="error_msg" t-if="errormsg" class="row">
+										<h5 style="color:red;"> No result found for the values that you entered. We would be happy to give you a custom quote.
+                        Please call 010-7856766</h5>
 			                      </div>
-			                      <div id="accessory_preferences" class="row">
-										<h4>Accessories</h4>
+                            	  <div  id="preferences" class="row">
+										<h5>Preferences</h5>
+			                      </div>
+			                      <div t-if="(len(avail_accessories) &gt; 0)" id="accessory_preferences" class="row">
+										<h5>Accessories</h5>
 			                     </div>
 		                    </div>
 
@@ -242,47 +247,17 @@
       <div class="oe_structure">
         <div class="container">
         <h3>Sale options for <t t-esc="curr_product_id.name" />  </h3>
-        <div class="row mt12">
-                           <div class="col-sm-8">
-                                          <div class="row mt12">
-                                                <div class="col-sm-4"><p><b>Product: </b></p></div>
-                                                <div class="col-sm-4"><t t-esc="curr_chd.origin_product_id.name" /></div>
-                                           </div>
-                                           <div class="row mt12">
-                                                <div class="col-sm-4"><p><b>config name: </b></p></div>
-                                                <div class="col-sm-6"><t t-esc="curr_chd.result_product_id.name" /></div>
-                                           </div>
-                                           <div class="row mt12">
-                                                <div class="col-sm-4"><p><b>Quantity: </b></p></div>
-                                                <div class="col-sm-4"><t t-esc="curr_chd.quantity" /></div>
-                                           </div>
-                                           <div class="row mt12">
-                                                <div class="col-sm-4"><p><b>HeightxWidth: </b></p></div>
-                                                <div class="col-sm-4"> <t t-esc="curr_chd.height" />  x  <t t-esc="curr_chd.width"/></div>
-                                           </div>
-                           </div>
-                           <div class="col-sm-4">
-                                  <div class="row mt12 solid">
-                                               <div class="row mt12">
-                                                    <div class="col-sm-6"><p><b><t t-esc="feedback"/></b></p></div>
-                                               </div>
-                                               <div class="row mt12">
 
-                                               </div>
-                                               <div class="row mt32">
-                                                    <t t-foreach="curr_chd.accessoire_line_ids" t-as="curr_accessory">
-                                                        <div class="col-sm-3"><p><t t-esc="curr_accessory.product_id.name"/></p></div>
-                                                        <div class="col-sm-3"><p> <t t-esc="curr_accessory.quantity"/></p></div>
-                                                    </t>
-                                               </div>
-                                   </div>
-                           </div>
-
-        </div>
-        <separator/>
         <div class="row mt12">
+             <div class="col-sm-4">
+                      <div class="row mt4 solid">
+                      			   	<div id="feedback" class="col-xs-6"><t t-raw="summary"/></div>
+                       </div>
+             </div>
+
+             <div class="col-sm-8">
                 <t t-foreach="results" t-as="result">
-                   <form t-attf-action="/chd_init/buy#{result.id}/" method="post" class="form-horizontal">
+                   <form t-attf-name="buy#{result_id}" t-attf-action="/chd_init/buy#{result.id}/" method="post" class="form-horizontal result_option">
                        <input type="hidden" name="result_obj" t-att-value="result" />
                        <div  class="row" style="border-bottom: 0.5px solid;" id="sale_option">
                        <br/>
@@ -302,8 +277,9 @@
                         </div>
                     </form>
                 </t>
-         </div>
+         	</div>
         </div>
+      </div>
       </div>
       <div class="oe_structure"/>
       </t>
@@ -317,8 +293,11 @@
         <div class="container">
         <h3>Buy </h3>
         <br/>
-        <h3> You have brought <t t-esc="configuration_form"/> </h3>
-        <h3> frobnicate! <t t-esc="result"/> </h3>
+		<div class="row mt12">
+             <div class="col-sm-12"><t t-raw="summary"/></div>
+         </div>
+        <h3>  <t t-esc="configuration_form"/> </h3>
+        <h3>  <t t-esc="result"/> </h3>
         </div>
       </div>
       <div class="oe_structure"/>

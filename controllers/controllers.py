@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp import http
-from openerp import api
+from openerp import api,tools
 from datetime import  datetime
 from openerp.osv import fields,orm
 import json
@@ -143,7 +143,7 @@ class Chd_init(http.Controller):
          # _model refers to old API model, self.pool is not available in controller context (praise the lord for Holger!)
          try:
              res = new_chd._model.calculate_price(http.request.cr,http.request.uid,[new_chd.id],context=http.request.context)
-         except:
+         except orm.except_orm,e:
              errormsg = "No result found for the values that you entered. We would be happy to give you a custom quote. Please call 010-7856766"
          results = chd_results.search([('configurator_id','=',new_chd.id)])
          if errormsg != "" and len(results.ids) == 0:
@@ -171,6 +171,7 @@ class Chd_init(http.Controller):
              'results':results,
              'configuration_form':str(form_data),
              'message':message,
+             'summary':form_data['summary'],
              })
 
 
@@ -192,7 +193,7 @@ class Chd_init(http.Controller):
             }
         order = http.request.env['chd.product_configurator.do_order'].create(vals)"""
         return http.request.render('website_chd_product_configurator.buy_option',{
-                'allstuff':str(form_data),
+               'summary':form_data['summary'],
                 })
 
 
@@ -216,9 +217,18 @@ class Chd_init(http.Controller):
 
     def recalculate_description(Self,formdata):
         res = "chosen options"
-
-
         return res
+
+    # display current users wishlist
+    @http.route('/chd_init/<id>/wishlist/' ,website=True)
+    def wish(self,id):
+        return True
+
+
+    # add to user's wishlist
+    @http.route('/chd_init/<id>/addwishlist/' ,type='json',website=True)
+    def wishadd(self,id):
+        return True
 
 
 
