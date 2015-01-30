@@ -38,7 +38,6 @@ class Chd_init(http.Controller):
             'conf_products': Conf_products.search([('chd_origin_product','=',True)]),
         })
 
-
     def onchange_type(self,cr,uid,ids,context=None):
         curr_finishings = chd_finishing.search([('type_option_ids','in',curr_types.ids)])
         return curr_finishings
@@ -66,18 +65,12 @@ class Chd_init(http.Controller):
             chd_size = http.request.env['chd.size'].search([('id','=',form_data['size'])])
             chd_dict['width'] = chd_size.width
             chd_dict['height'] = chd_size.height
-
          else:
             chd_dict['width'] = form_data['width']
             chd_dict['height'] = form_data['height']
-
-
-
          # if there aren't any errors, upload the image
          message = ''
          if Conf_products.search([('id','=',form_data['product_id'])])[0].chd_configurator_has_image:
-
-
              try:
                  import werkzeug
                  import base64

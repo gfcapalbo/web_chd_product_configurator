@@ -305,4 +305,15 @@
       </t>
   </template>
 
+<template id="header" inherit_id="website.layout" name="Header Product Configurator">
+  <xpath expr="//header//ul[@id='top_menu']/li" position="before">
+      <li >
+          <a href="/chd_init/">
+                Product Configurator
+          </a>
+      </li>
+  </xpath>
+</template>
+
+
   </data></openerp>
