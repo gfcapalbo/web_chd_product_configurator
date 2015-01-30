@@ -274,7 +274,7 @@
                                 <p>Expected date of delivery: <t t-esc="result.date_delivery"/> </p>
                                 <br/>
                             </div>
-                        <button id="buy" type="submit" class="btn btn-primary btn-lg pull-right" >Buy</button>
+                        <button id="buy" value="buy" name="action" type="submit" class="btn btn-primary btn-lg pull-right" >Buy</button>
                         </div>
                     </form>
                 </t>

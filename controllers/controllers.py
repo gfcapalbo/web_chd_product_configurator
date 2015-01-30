@@ -164,16 +164,43 @@ class Chd_init(http.Controller):
     @http.route('/chd_init/buy<id>/',website=True)
     def chosen_option(self,**form_data):
         result = http.request.env['chd.product_configurator.result'].search([('id','=',form_data['id'])])
-        configurator = http.request.env['chd.product_configurator'].search([('id','=',result.configurator_id.id)])
-        http.request.context['active_id'] = result.id
-        fields = ['order_id','return_to_order','display_order_id','result_id']
-        doorder_model = http.request.env['chd.product_configurator.do_order']
-        # again, access 7.0 with ._model property
-        doorder_model._model.default_get(http.request.cr,http.request.uid,fields_list=fields,context=http.request.context)
-        return http.request.render('website_chd_product_configurator.buy_option',{
-               'summary':form_data['summary'],
-                })
+        # temporary fix, must implement inheritance to manage wish
+        if form_data['action'] == 'buy':
+            configurator = http.request.env['chd.product_configurator'].search([('id','=',result.configurator_id.id)])
+            http.request.context['active_id'] = result.id
+            fields = ['order_id','return_to_order','display_order_id','result_id']
+            doorder_model = http.request.env['chd.product_configurator.do_order']
+            # again, access 7.0 with ._model property
+            doorder_model._model.default_get(http.request.cr,http.request.uid,fields_list=fields,context=http.request.context)
+            return http.request.render('website_chd_product_configurator.buy_option',{
+                   'summary':form_data['summary'],
+                    })
+        elif form_data['action'] == 'wish':
+            # check if the user already has a wishlist
+            wishlist_model = http.request.env['chd.wishlist']
+            result_model = http.request.env['chd.product_configurator.result']
+            wish_ids = wishlist_model.search([('owner','=',1)])
+            if len(wish_ids) == 0:
+                wish_ids = wishlist_model.create({'owner':1,'favorites': False})
+            # better to write wish_ids.ids[0] ala 8.0 instead of writing wish_ids[0].ids
+            wish_ids.write({
+                        'chd_results':[(1,0,{'chd_results': int(form_data['id']) })]
+                         })
 
+            data = json.dumps(http.request.registry['chd.wishlist'].search_read(
+            http.request.cr,
+            http.request.uid,
+            fields=['id','chd_results'],
+            limit=30,
+            domain=[('owner','in',[1])],
+            context=http.request.context
+            ))
+            return  http.request.render('website_chd_wishlist.show_list',{
+                   'summary':form_data['summary'],
+                   'just_added_result': result,
+                   'user':result.create_uid,
+                   'results':result,
+                    })
 
     # method for fetching finishing options via json
     @http.route('/chd_init/getch/',type='json',website=True)
