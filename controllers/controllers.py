@@ -171,9 +171,12 @@ class Chd_init(http.Controller):
         if form_data['action'] == 'buy':
             doorder_model = http.request.env['chd.product_configurator.do_order']
             # again, access 7.0 with ._model property
-            doorder_model._model.default_get(http.request.cr,http.request.uid,fields_list=fields,context=http.request.context)
+            doorder_res = doorder_model._model.default_get(http.request.cr,http.request.uid,fields_list=fields,context=http.request.context)
+            order = http.request.env['sale.order'].search([('id','=',doorder_res['order_id'])])
             return http.request.render('website_chd_product_configurator.buy_option',{
                    'summary':form_data['summary'],
+                   'result':result,
+                   'order': order,
                     })
         elif form_data['action'] == 'wish':
             wishlist_model = http.request.env['chd.wishlist']

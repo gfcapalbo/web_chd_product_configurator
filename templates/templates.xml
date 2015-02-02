@@ -216,7 +216,9 @@
                             <div t-if="curr_product_id.chd_configurator_has_image" id="imagearea">
                                   <input class="btn btn-default btn-lg pull-left" type="file" name="pic" accept="image/*" required="true"/>
                             </div>
-                            <div class="row"> <p></p></div>
+                            <div class="row"> <p>
+                            	<br/>
+                            </p></div>
 
                             <div id="feedback">
 			                	  <div id="error_msg" t-if="errormsg" class="row">
@@ -292,17 +294,40 @@
 
      <template id="buy_option">
     <t t-call="website.layout">
-      <t t-set="title">Buy</t>
+      <t t-set="title">Purchase</t>
       <div class="oe_structure"/>
       <div class="oe_structure">
         <div class="container">
-        <h3>Buy </h3>
+        <h3> <t t-esc="result.configurator_id.partner_id.name"/> , you have confirmed the purchase of <t t-esc="result.configurator_id.origin_product_id.name"/> configured as follows: </h3>
         <br/>
 		<div class="row mt12">
-             <div class="col-sm-12"><t t-raw="summary"/></div>
+             <div class="col-sm-5"><t t-raw="summary"/></div>
+             <div class="col-sm-5">
+						<div class="col-xs-4">
+							    <br/>
+                            	<p>Product name: <t t-esc="result.configurator_id.origin_product_id.name"/> </p>
+                            	<p>Quantity: <t t-esc="result.configurator_id.quantity"/> </p>
+                            	<p>Configuration date: <t t-esc="result.configurator_id.create_date"/> </p>
+                            	<p>Created by <t t-esc="result.configurator_id.partner_id.name"/></p>
+                            </div>
+                            <div class="col-xs-6">
+								<br/>
+                                <p>list price:<b> <t t-esc="result.list_price"/> </b> </p>
+                                <p>Cost price for supplier : <b><t t-esc="result.standard_price"/></b> </p>
+                                <p>Customer price : <b><t t-esc="result.customer_price"/></b> </p>
+                                <p>Total order amount ex. VAT : <b><t t-esc="result.total_amount_ex_vat"/></b> </p>
+                                <br/>
+                            </div>
+                            <div class="col-sm-2">
+              				<p>
+              					<br/>
+                                <p><b> Your purchase has been added to sale order <t t-esc="order.name"> . </b></p>
+                                <p><b> And will be delivered to<t t-esc="order.sender_address_id"> . </b></p>
+              				</p>
+              </div>
+             	</div>
+
          </div>
-        <h3>  <t t-esc="configuration_form"/> </h3>
-        <h3>  <t t-esc="result"/> </h3>
         </div>
       </div>
       <div class="oe_structure"/>
