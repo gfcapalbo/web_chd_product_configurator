@@ -321,8 +321,8 @@
                             <div class="col-sm-2">
               				<p>
               					<br/>
-                                <p><b> Your purchase has been added to sale order <t t-esc="order.name"> . </b></p>
-                                <p><b> And will be delivered to<t t-esc="order.sender_address_id"> . </b></p>
+                                <p><b> Your purchase has been added to sale order <t t-esc="order.name"/> . </b></p>
+                                <p><b> And will be delivered to<t t-esc="order.sender_address_id"/> . </b></p>
               				</p>
               </div>
              	</div>
