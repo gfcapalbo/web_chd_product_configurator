@@ -13,6 +13,10 @@ class Chd_init(http.Controller):
 
     @http.route('/chd_init/',auth='public',website=True)
     def start(self,selected_id=False,type=False):
+        partner = self.get_current_partner()
+        if partner == False:
+             return  http.request.render('website_chd_product_configurator.no_partner',{
+                        })
         Conf_products = http.request.env['product.template']
         accessories = http.request.env['product.product']
         chd_price_components_at = http.request.env['price.component.attribute.template']
@@ -159,14 +163,23 @@ class Chd_init(http.Controller):
     def get_current_partner(self):
          partner_model = http.request.env['res.partner']
          current_partner = partner_model.search([('user_account_id','=',http.request.uid)])
-         return current_partner.ids[0]
+         if len(current_partner) == 0:
+             return False
+         else:
+             return current_partner.ids[0]
 
     @http.route('/chd_init/buy<id>/',website=True)
     def chosen_option(self,**form_data):
+        partner = self.get_current_partner()
+        if partner == False:
+             return  http.request.render('website_chd_product_configurator.no_partner',{
+                        })
+
         result_model = http.request.env['chd.product_configurator.result']
         result = result_model.search([('id','=',form_data['id'])])
         configurator = http.request.env['chd.product_configurator'].search([('id','=',result.configurator_id.id)])
         http.request.context['active_id'] = result.id
+
         fields = ['order_id','return_to_order','display_order_id','result_id']
         if form_data['action'] == 'buy':
             doorder_model = http.request.env['chd.product_configurator.do_order']
@@ -181,9 +194,9 @@ class Chd_init(http.Controller):
         elif form_data['action'] == 'wish':
             wishlist_model = http.request.env['chd.wishlist']
             # check if the user already has a wishlist if not create
-            wishlist = wishlist_model.search([('owner','=',self.get_current_partner())])
+            wishlist = wishlist_model.search([('owner','=',partner)])
             if len(wishlist) == 0:
-                wishlist = wishlist_model.create({'owner':self.get_current_partner()})
+                wishlist = wishlist_model.create({'owner':partner})
             # better to write wishlist.ids[0] ala 8.0 instead of writing wishlist[0].id
             result.write({
                         'wishlist': wishlist.ids[0],

@@ -337,6 +337,20 @@
       </t>
   </template>
 
+
+    <template id="no_partner">
+    <t t-call="website.layout">
+      <t t-set="title">No partner associated</t>
+      <div class="oe_structure"/>
+      <div class="oe_structure">
+        <div class="container">
+        <h3>No partner has been registered for this user , please contact us.</h3>
+      </div>
+      </div>
+      <div class="oe_structure"/>
+      </t>
+  </template>
+
 <template id="header" inherit_id="website.layout" name="Header Product Configurator">
   <xpath expr="//header//ul[@id='top_menu']/li" position="before">
       <li >
