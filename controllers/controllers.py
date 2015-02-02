@@ -55,7 +55,7 @@ class Chd_init(http.Controller):
          all_attributes = {}
          chd_dict = {
              'origin_product_id':curr_product_id.ids[0],
-             'partner_id':1,
+             'partner_id':self.get_current_partner(),
              'state':'config',
              'quantity': form_data['quantity']
              }
@@ -159,7 +159,10 @@ class Chd_init(http.Controller):
              'summary':form_data['summary'],
              })
 
-
+    def get_current_partner(self):
+         partner_model = http.request.env['res.partner']
+         current_partner = partner_model.search([('user_account_id','=',http.request.uid)])
+         return current_partner.ids[0]
 
     @http.route('/chd_init/buy<id>/',website=True)
     def chosen_option(self,**form_data):
@@ -178,28 +181,25 @@ class Chd_init(http.Controller):
         elif form_data['action'] == 'wish':
             # check if the user already has a wishlist
             wishlist_model = http.request.env['chd.wishlist']
+            wishlist_element_model = http.request.env['chd.wishlist.element']
             result_model = http.request.env['chd.product_configurator.result']
-            wish_ids = wishlist_model.search([('owner','=',1)])
-            if len(wish_ids) == 0:
-                wish_ids = wishlist_model.create({'owner':1,'favorites': False})
+            # if the wishlist for the user does not exist create
+            wishlist = wishlist_model.search([('owner','=',self.get_current_partner())])
+            if len(wishlist) == 0:
+                wishlist = wishlist_model.create({'owner':self.get_current_partner()})
+            # now create an element and add it to wishlist_id
             # better to write wish_ids.ids[0] ala 8.0 instead of writing wish_ids[0].ids
-            wish_ids.write({
-                        'chd_results':[(1,0,{'chd_results': int(form_data['id']) })]
+            wishlist_element = wishlist_element_model.create({
+                        'wishlist': wishlist.ids[0],
+                        'chd_results':[(1,0,{'chd_results': int(form_data['id']) })],
+                        'summary': form_data['summary'],
+                        'favorites':False,
                          })
-
-            data = json.dumps(http.request.registry['chd.wishlist'].search_read(
-            http.request.cr,
-            http.request.uid,
-            fields=['id','chd_results'],
-            limit=30,
-            domain=[('owner','in',[1])],
-            context=http.request.context
-            ))
+            results = wishlist_element_model.search([('wishlist','=',wishlist.ids[0])])
             return  http.request.render('website_chd_wishlist.show_list',{
                    'summary':form_data['summary'],
-                   'just_added_result': result,
                    'user':result.create_uid,
-                   'results':result,
+                   'results':results,
                     })
 
     # method for fetching finishing options via json

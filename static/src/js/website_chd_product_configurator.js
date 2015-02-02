@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+
 	$('.type_selection').each(function () {
 	    var type_selection = this;
 	    $(type_selection).on('click', '.type_selection', function ()

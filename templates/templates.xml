@@ -39,7 +39,7 @@
           <div class="oe_structure"/>
           <div class="oe_structure">
           <div class="container">
-            <h3>Configuration options for <t t-esc="curr_product_id.name" /></h3>
+            <h3 id="c_title">Configuration options for <t t-esc="curr_product_id.name" /></h3>
             <form id="mainf" t-attf-action="/chd_init/#{ curr_product_id.id }/" method="post"  enctype="multipart/form-data"  class="form-horizontal">
             <div class="row">
                 <div class="col-sm-9">
@@ -262,18 +262,22 @@
                        <input type="hidden" name="result_obj" t-att-value="result" />
                        <div  class="row" style="border-bottom: 0.5px solid;" id="sale_option">
                        <br/>
-                            <div class="col-xs-4">
-                                <p>Cost price for supplier : <t t-esc="result.standard_price"/> </p>
-                                <p>Customer price : <t t-esc="result.customer_price"/> </p>
+                            <div class="col-xs-6">
+                            	<p>Product name: <t t-esc="result.configurator_id.origin_product_id.name"/> </p>
+                            	<p>Quantity: <t t-esc="result.configurator_id.quantity"/> </p>
+                            	<p>Configuration date: <t t-esc="result.configurator_id.create_date"/> </p>
+                            	<p>Created by <t t-esc="result.configurator_id.partner_id.name"/></p>
                             </div>
-                            <div class="col-xs-4">
-                                <p>Total order amount ex. VAT : <t t-esc="result.total_amount_ex_vat"/> </p>
+                            <div class="col-xs-6">
+
+                                <p>list price:<b> <t t-esc="result.list_price"/> </b> </p>
+                                <p>Cost price for supplier : <b><t t-esc="result.standard_price"/></b> </p>
+                                <p>Customer price : <b><t t-esc="result.customer_price"/></b> </p>
+                                <p>Total order amount ex. VAT : <b><t t-esc="result.total_amount_ex_vat"/></b> </p>
                                 <br/>
                             </div>
-                            <div class="col-xs-4">
-                                <p>Expected date of delivery: <t t-esc="result.date_delivery"/> </p>
-                                <br/>
-                            </div>
+
+
                         <button id="buy" value="buy" name="action" type="submit" class="btn btn-primary btn-lg pull-right" >Buy</button>
                         </div>
                     </form>
