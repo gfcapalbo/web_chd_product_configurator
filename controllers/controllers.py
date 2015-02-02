@@ -50,7 +50,6 @@ class Chd_init(http.Controller):
          chd_results = http.request.env['chd.product_configurator.result']
          curr_product_id = Conf_products.search([('id','=',form_data['id'])])
          chd_price_components_at = http.request.env['price.component.attribute.template']
-
          all_accessories = []
          all_attributes = {}
          chd_dict = {
@@ -82,20 +81,18 @@ class Chd_init(http.Controller):
              except:
                  message = 'there where problems uploading your image, contact us'
          if message == '': message = 'no image needed for this product'
-
-
          for key in form_data:
              if ('pricecomponent_' in key) :
-                 # if it is of type "string" the value is the index of the selection in pricecomponent_name, the id is encoded in the key
+                 # if it is of type "string" the value is the index of the
+                 # selection in pricecomponent_name, the id is encoded in the key
                  if 'pricecomponent_string' in key:
                      pricecomponent_id = int(key.split('_')[3])
                      pricecomponent_value = form_data[key]
-
-                 # if it is of type numerical the value is the actual value of the pricecomponent field, the id is encoded in the key
+                 # if it is of type numerical the value is the actual value of
+                 # the pricecomponent field, the id is encoded in the key
                  if 'pricecomponent_int' in key:
                      pricecomponent_id = int(key.split('_')[3])
                      pricecomponent_value = form_data[key]
-
                  # the configurator stores the attributes in a dictionary in the "attributes" field ,
                  all_attributes['_attribute_' + str(pricecomponent_id)] = int(pricecomponent_value)
 
@@ -166,12 +163,12 @@ class Chd_init(http.Controller):
 
     @http.route('/chd_init/buy<id>/',website=True)
     def chosen_option(self,**form_data):
-        result = http.request.env['chd.product_configurator.result'].search([('id','=',form_data['id'])])
-        # temporary fix, must implement inheritance to manage wish
+        result_model = http.request.env['chd.product_configurator.result']
+        result = result_model.search([('id','=',form_data['id'])])
+        configurator = http.request.env['chd.product_configurator'].search([('id','=',result.configurator_id.id)])
+        http.request.context['active_id'] = result.id
+        fields = ['order_id','return_to_order','display_order_id','result_id']
         if form_data['action'] == 'buy':
-            configurator = http.request.env['chd.product_configurator'].search([('id','=',result.configurator_id.id)])
-            http.request.context['active_id'] = result.id
-            fields = ['order_id','return_to_order','display_order_id','result_id']
             doorder_model = http.request.env['chd.product_configurator.do_order']
             # again, access 7.0 with ._model property
             doorder_model._model.default_get(http.request.cr,http.request.uid,fields_list=fields,context=http.request.context)
@@ -179,23 +176,18 @@ class Chd_init(http.Controller):
                    'summary':form_data['summary'],
                     })
         elif form_data['action'] == 'wish':
-            # check if the user already has a wishlist
             wishlist_model = http.request.env['chd.wishlist']
-            wishlist_element_model = http.request.env['chd.wishlist.element']
-            result_model = http.request.env['chd.product_configurator.result']
-            # if the wishlist for the user does not exist create
+            # check if the user already has a wishlist if not create
             wishlist = wishlist_model.search([('owner','=',self.get_current_partner())])
             if len(wishlist) == 0:
                 wishlist = wishlist_model.create({'owner':self.get_current_partner()})
-            # now create an element and add it to wishlist_id
-            # better to write wish_ids.ids[0] ala 8.0 instead of writing wish_ids[0].ids
-            wishlist_element = wishlist_element_model.create({
+            # better to write wishlist.ids[0] ala 8.0 instead of writing wishlist[0].id
+            result.write({
                         'wishlist': wishlist.ids[0],
-                        'chd_results':[(1,0,{'chd_results': int(form_data['id']) })],
                         'summary': form_data['summary'],
                         'favorites':False,
                          })
-            results = wishlist_element_model.search([('wishlist','=',wishlist.ids[0])])
+            results = result_model.search([('wishlist','=',wishlist.ids[0])])
             return  http.request.render('website_chd_wishlist.show_list',{
                    'summary':form_data['summary'],
                    'user':result.create_uid,
@@ -215,10 +207,6 @@ class Chd_init(http.Controller):
             context=http.request.context
             ))
         return data
-
-    def recalculate_description(Self,formdata):
-        res = "chosen options"
-        return res
 
 
 

@@ -86,7 +86,6 @@ $(document).ready(function () {
 
 	$('.result_option').submit( function(){
 				chosenform=this;
-				debugger;
 	 			var elements = document.querySelectorAll( 'feedback *' );
 	 			$('<input />').attr('type', 'hidden')
 		         .attr('name', "summary")
