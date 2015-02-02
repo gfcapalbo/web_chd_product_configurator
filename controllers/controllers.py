@@ -58,7 +58,7 @@ class Chd_init(http.Controller):
          all_attributes = {}
          chd_dict = {
              'origin_product_id':curr_product_id.ids[0],
-             'partner_id':self.get_current_partner(),
+             'partner_id':self.get_current_partner().id,
              'state':'config',
              'quantity': form_data['quantity']
              }
@@ -166,7 +166,7 @@ class Chd_init(http.Controller):
          if len(current_partner) == 0:
              return False
          else:
-             return current_partner.ids[0]
+             return current_partner[0]
 
     @http.route('/chd_init/buy<id>/',website=True)
     def chosen_option(self,**form_data):
@@ -194,9 +194,9 @@ class Chd_init(http.Controller):
         elif form_data['action'] == 'wish':
             wishlist_model = http.request.env['chd.wishlist']
             # check if the user already has a wishlist if not create
-            wishlist = wishlist_model.search([('owner','=',partner)])
+            wishlist = wishlist_model.search([('owner','=',partner.id)])
             if len(wishlist) == 0:
-                wishlist = wishlist_model.create({'owner':partner})
+                wishlist = wishlist_model.create({'owner':partner.id})
             # better to write wishlist.ids[0] ala 8.0 instead of writing wishlist[0].id
             result.write({
                         'wishlist': wishlist.ids[0],
