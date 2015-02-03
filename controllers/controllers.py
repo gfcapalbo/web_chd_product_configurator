@@ -9,14 +9,15 @@ from gdata.tlslite.utils.jython_compat import SelfTestBase
 
 
 
-class Chd_init(http.Controller):
+class Chd_website(http.Controller):
 
     @http.route('/chd_init/',auth='public',website=True)
     def start(self,selected_id=False,type=False):
         partner = self.get_current_partner()
         if partner == False:
-             return  http.request.render('website_chd_product_configurator.no_partner',{
-                        })
+             return  http.request.render(
+                 'website_chd_product_configurator.no_partner',{
+                     })
         Conf_products = http.request.env['product.template']
         accessories = http.request.env['product.product']
         chd_price_components_at = http.request.env['price.component.attribute.template']
@@ -191,27 +192,10 @@ class Chd_init(http.Controller):
                    'result':result,
                    'order': order,
                     })
-        elif form_data['action'] == 'wish':
-            wishlist_model = http.request.env['chd.wishlist']
-            # check if the user already has a wishlist if not create
-            wishlist = wishlist_model.search([('owner','=',partner.id)])
-            if len(wishlist) == 0:
-                wishlist = wishlist_model.create({'owner':partner.id})
-            # better to write wishlist.ids[0] ala 8.0 instead of writing wishlist[0].id
-            result.write({
-                        'wishlist': wishlist.ids[0],
-                        'summary': form_data['summary'],
-                        'favorites':False,
-                         })
-            results = result_model.search([('wishlist','=',wishlist.ids[0])])
-            return  http.request.render('website_chd_wishlist.show_list',{
-                   'summary':form_data['summary'],
-                   'user':result.create_uid,
-                   'results':results,
-                    })
+
 
     # method for fetching finishing options via json
-    @http.route('/chd_init/getch/',type='json',website=True)
+    @http.route('/chd_init/getch/',type='json')
     def tr(self,type_id):
         curr_types = http.request.env['product.finishing'].search([('type_option_ids','in',[type_id])])
         data = json.dumps(http.request.registry['product.finishing'].search_read(

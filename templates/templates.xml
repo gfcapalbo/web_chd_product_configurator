@@ -1,13 +1,14 @@
  <openerp><data>
 
- <!--Warning: the field names encode data used both by javascript and python back-end, before changing read code -->
 
-  <template id="assets_product_configurator" inherit_id="website.assets_frontend" name="chd_product_configurator">
+  <template id="assets_frontend" inherit_id="website.assets_frontend" name="chd_product_configurator">
   <xpath expr="." position="inside">
       <script type="text/javascript" src="/website_chd_product_configurator/static/src/js/website_chd_product_configurator.js"></script>
       <link rel='stylesheet' href='/website_chd_product_configurator/static/src/css/website_chd_product_configurator.css'/>
   </xpath>
   </template>
+
+
   <template id="conf_start">
     <t t-call="website.layout">
       <t t-set="title">Product Configurator</t>

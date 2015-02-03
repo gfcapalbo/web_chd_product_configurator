@@ -3,11 +3,13 @@
 'description': """
 Web front for chindu product configurator
 """,
-'depends': ['base',
-            'website',
-            'chd_product_configurator'
+'author' : 'therp B.V.',
+'depends': ['website',
+            'chd_product_configurator',
            ],
 'data': [
         'templates/templates.xml',
         ],
+    'installable': True,
+    'application': True,
 }

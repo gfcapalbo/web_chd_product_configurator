@@ -1,6 +1,5 @@
 $(document).ready(function () {
-
-
+	console.log(openerp);
 	$('.type_selection').each(function () {
 	    var type_selection = this;
 	    $(type_selection).on('click', '.type_selection', function ()
@@ -26,7 +25,6 @@ $(document).ready(function () {
 
 	$(':input').each(function() {
 			var element=this;
-			console.log(element);
 			$(element).on('change', function(){
 				$(':input').each(function() {
 						if (document.getElementById("error_msg")){
