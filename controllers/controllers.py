@@ -212,7 +212,7 @@ class Chd_website(http.Controller):
                 [('id', '=', doorder_res['order_id'])])
             return request.render(
                 'website_chd_product_configurator.buy_option', {
-                    'summary': form_data['summary'],
+                    'summary': result.summary,
                     'result': result,
                     'order': order,
                     })
